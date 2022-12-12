@@ -66,13 +66,10 @@ public class RimService implements InitializableService {
             throw new NotFoundItemToUpdateException("You are trying to update a non-existing item");
         }
 
-        //We have set here already the id of the RimEntity
         RimEntity rimToModify = rimOpt.get()
                 .setMetalKind(rimCreateModifyRequestJsonDTO.getMetalKind())
                 .setInches(rimCreateModifyRequestJsonDTO.getInches());
 
-
-        //savedInDB.getId() == rimOpt.get().getId()
         RimEntity savedInDB = rimRepository.save(rimToModify);
         RimCreatedModifiedResponseJsonDTO rimCreatedModifiedResponseJsonDTO =
                 this.structMapper.rimEntityToRimCreatedModifiedResponseJsonDTO(savedInDB);

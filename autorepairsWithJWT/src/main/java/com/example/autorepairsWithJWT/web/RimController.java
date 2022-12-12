@@ -44,7 +44,7 @@ public class RimController {
     //    }
     @PostMapping("/spareparts/rims")
     public ResponseEntity<RimCreatedModifiedResponseJsonDTO> createRim(
-            @RequestBody RimCreateModifyRequestJsonDTO rimCreateModifyRequestJsonDTO,   //десериализация на body-то до Java обект – пропъртитата на боди-то на нашата заявка ще бъдат популирани върху нашето DTO
+            @RequestBody RimCreateModifyRequestJsonDTO rimCreateModifyRequestJsonDTO,
             UriComponentsBuilder builder) {
 
         RimCreatedModifiedResponseJsonDTO rimCreatedModifiedResponseJsonDTO = rimService.addNewRim(rimCreateModifyRequestJsonDTO);
@@ -52,17 +52,12 @@ public class RimController {
                 .buildAndExpand(rimCreatedModifiedResponseJsonDTO.getId())
                 .toUri();
 
-//        return ResponseEntity
-//                .created(location)
-//                .build();
-
         return ResponseEntity
                 .created(location)
-//                .header("RimResponseHeader", "MyValue")
                 .body(rimCreatedModifiedResponseJsonDTO);
     }
 
-    //calling PUT on http://localhost:8000/spareparts/edit/rims/3 - we replace the whole rim, but keep the id of the rim
+    //calling PUT on http://localhost:8000/spareparts/edit/rims/3
     //    {
     //        "metalKind": "aluminium",
     //        "inches": "20"
@@ -70,7 +65,7 @@ public class RimController {
     @PutMapping("/spareparts/edit/rims/{rimId}")
     public ResponseEntity<RimCreatedModifiedResponseJsonDTO> ModifyRim(
             @PathVariable("rimId") Long rimId,
-            @RequestBody RimCreateModifyRequestJsonDTO rimCreateModifyRequestJsonDTO,   //десериализация на body-то до Java обект – пропъртитата на боди-то на нашата заявка ще бъдат популирани върху нашето DTO
+            @RequestBody RimCreateModifyRequestJsonDTO rimCreateModifyRequestJsonDTO,
             UriComponentsBuilder builder) {
 
         RimCreatedModifiedResponseJsonDTO rimCreatedModifiedResponseJsonDTO =
@@ -80,13 +75,8 @@ public class RimController {
                 .buildAndExpand(rimId)
                 .toUri();
 
-//        return ResponseEntity
-//                .created(location)
-//                .build();
-
         return ResponseEntity
                 .created(location)
-//                .header("RimResponseHeader", "MyValue")
                 .body(rimCreatedModifiedResponseJsonDTO);
     }
 

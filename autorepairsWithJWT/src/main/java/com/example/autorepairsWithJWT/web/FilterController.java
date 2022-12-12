@@ -71,7 +71,6 @@ public class FilterController {
 
         Long isFilterModified = filterService.modifyExistingFilter(filterId, filterCreateModifyRequestJsonDTO);
 
-        //filterId == isFilterModified
         URI location = builder.path("/spareparts/filters/{id}")
                 .buildAndExpand(filterId)
                 .toUri();

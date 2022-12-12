@@ -15,19 +15,17 @@ import java.util.List;
 
 @Component
 public class AppInit implements CommandLineRunner {
-    private final RestTemplate restTemplate; //нашия Bean
-
-    //Всички service класове, които сме имплементирали с InitializableService interface,
-    // тук ни се зареждат автоматично
+    private final RestTemplate restWebClient;
     private final List<InitializableService> allServices;
 
-    public AppInit(RestTemplate restTemplate, List<InitializableService> allServices) {
-        this.restTemplate = restTemplate;
+    public AppInit(RestTemplate restWebClient, List<InitializableService> allServices) {
+        this.restWebClient = restWebClient;
         this.allServices = allServices;
     }
 
     @PostConstruct
     public void beginInit() {
+        //OPEN-CLOSE principle implemented here
         this.allServices.forEach(srvc -> srvc.init());
     }
 
@@ -39,7 +37,7 @@ public class AppInit implements CommandLineRunner {
     }
 
     private void getAllRims() {
-        ResponseEntity<RimCreateModifyRequestJsonDTO[]> allRimsResponse = restTemplate
+        ResponseEntity<RimCreateModifyRequestJsonDTO[]> allRimsResponse = restWebClient
                 .getForEntity("http://localhost:8000/spareparts/rims/all", RimCreateModifyRequestJsonDTO[].class);
 
         if (allRimsResponse.hasBody()) {
@@ -50,7 +48,7 @@ public class AppInit implements CommandLineRunner {
     }
 
     private void getOneRim() {
-        ResponseEntity<RimCreateModifyRequestJsonDTO> oneRimResponse = restTemplate
+        ResponseEntity<RimCreateModifyRequestJsonDTO> oneRimResponse = restWebClient
                 .getForEntity("http://localhost:8000/spareparts/rims/1", RimCreateModifyRequestJsonDTO.class);
         if (oneRimResponse.hasBody()) {
             System.out.println("Rim: " + oneRimResponse.getBody());
@@ -81,7 +79,7 @@ public class AppInit implements CommandLineRunner {
         HttpEntity<RimEntity> request = new HttpEntity<>(newRimEntity, headers);
 
 //caught by the @RestController :)
-        ResponseEntity<RimEntity> oneRimPost = restTemplate
+        ResponseEntity<RimEntity> oneRimPost = restWebClient
                 .postForEntity("http://localhost:8000/spareparts/rims", request, RimEntity.class);
 
         //If we do not have the @RestController with @PostMapping("/spareparts/rims") in class RimController,

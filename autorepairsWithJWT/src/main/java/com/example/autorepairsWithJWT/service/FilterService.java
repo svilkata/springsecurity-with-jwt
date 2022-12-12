@@ -70,7 +70,6 @@ public class FilterService implements InitializableService {
                 .setModel(filterCreateModifyRequestJsonDTO.getModel())
                 .setModification(filterCreateModifyRequestJsonDTO.getModification());
 
-        //savedInDB.getId() == filterOpt.get().getId()
         FilterEntity savedInDB = filterRepository.save(filterToModify);
 
         return savedInDB.getId();

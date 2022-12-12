@@ -7,7 +7,7 @@ import com.example.autorepairsWithJWT.model.entity.TyreEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-@Mapper(componentModel = "spring")  //може да бъде expose-вано като Spring bean
+@Mapper(componentModel = "spring")  //exposed as a Spring bean
 public interface StructMapper {
 
     @Mapping(target = "id")

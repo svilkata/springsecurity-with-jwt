@@ -1,8 +1,6 @@
-package com.example.autorepairsWithJWT.config;
+package com.example.autorepairsWithJWT.utils;
 
-import com.example.autorepairsWithJWT.repository.UserRepository;
 import com.example.autorepairsWithJWT.service.AppUserDetailsService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,7 +19,6 @@ import java.util.List;
 @Component
 public class JwtTokenFilter extends OncePerRequestFilter {
     private final JwtTokenUtil jwtTokenUtil;
-
     private final AppUserDetailsService appUserDetailsService;
 
     public JwtTokenFilter(JwtTokenUtil jwtTokenUtil, AppUserDetailsService appUserDetailsService) {
@@ -30,24 +27,25 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
+
         // Get authorization header and validate
         if (!hasAuthorizationBearer(request)) {
-            chain.doFilter(request, response);
+            filterChain.doFilter(request, response);
             return;
         }
 
         // Get jwt token and validate
         final String token = getAccessToken(request);
         if (!jwtTokenUtil.validateAccessToken(token)) {
-            chain.doFilter(request, response);
+            filterChain.doFilter(request, response);
             return;
         }
 
         // Get user identity and set it on the spring security context
         setAuthenticationContext(token, request);
-        chain.doFilter(request, response);
+        filterChain.doFilter(request, response);
     }
 
     private boolean hasAuthorizationBearer(HttpServletRequest request) {
@@ -69,24 +67,22 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         UserDetails userDetails = getUserDetails(token);
 
         UsernamePasswordAuthenticationToken
-                authentication = new UsernamePasswordAuthenticationToken(
+                usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
                 userDetails,
                 null,
                 userDetails == null ?
                         List.of() : userDetails.getAuthorities());
 
-        authentication.setDetails(
+        usernamePasswordAuthenticationToken.setDetails(
                 new WebAuthenticationDetailsSource().buildDetails(request));
 
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+        SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
     }
 
     private UserDetails getUserDetails(String token) {
-        String[] jwtSubject = jwtTokenUtil.getSubject(token).split(",");
-//        userDetails.setId(Integer.parseInt(jwtSubject[0]));
-//        userDetails.setUsername(jwtSubject[1]);
+        String jwtSubject = jwtTokenUtil.getSubject(token);
 
-        UserDetails userDetails = appUserDetailsService.loadUserByUsername(jwtSubject[1]);
+        UserDetails userDetails = appUserDetailsService.loadUserByUsername(jwtSubject);
 
         return userDetails;
     }

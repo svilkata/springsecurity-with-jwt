@@ -32,7 +32,6 @@ public class UserService implements InitializableService {
             UserRoleEntity moderatorRole = new UserRoleEntity().setUserRole(UserRoleEnum.MODERATOR);
             UserRoleEntity userRole = new UserRoleEntity().setUserRole(UserRoleEnum.USER);
 
-            //тук SQL базата му слага пореден ID номер
             adminRole = userRoleRepository.save(adminRole);
             moderatorRole = userRoleRepository.save(moderatorRole);
             userRole = userRoleRepository.save(userRole);

@@ -78,7 +78,6 @@ public class TyreService implements InitializableService {
         //We set here the id of the TyreEntity
         tyreToModify.setId(tyreId);
 
-        //savedInDB.getId() == tyreOpt.get().getId()
         TyreEntity savedInDB = tyreRepository.save(tyreToModify);
         TyreCreatedModifiedResponseJsonDTO tyreCreatedModifiedResponseJsonDTO =
                 this.structMapper.tyreEntityToTyreCreatedModifiedResponseJsonDTO(savedInDB);
