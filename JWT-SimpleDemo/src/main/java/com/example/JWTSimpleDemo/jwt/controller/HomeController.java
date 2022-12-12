@@ -27,8 +27,8 @@ public class HomeController {
 
 
     @GetMapping("/")
-    public String homw() {
-        return "Welcome to My Demo";
+    public String home() {
+        return "Welcome to My JWT Demo";
     }
 
     @PostMapping("/authenticate")
