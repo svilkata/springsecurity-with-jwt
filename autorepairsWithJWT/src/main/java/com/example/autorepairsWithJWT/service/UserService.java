@@ -1,32 +1,38 @@
 package com.example.autorepairsWithJWT.service;
 
+import com.example.autorepairsWithJWT.config.mapstruct.StructMapper;
+import com.example.autorepairsWithJWT.exception.NotFoundUserException;
+import com.example.autorepairsWithJWT.exception.NotFoundUsernameEmailException;
 import com.example.autorepairsWithJWT.init.InitializableService;
-import com.example.autorepairsWithJWT.model.dto.userauth.UserRegisterRequestResponse;
-import com.example.autorepairsWithJWT.model.dto.userauth.UserRoleObject;
+import com.example.autorepairsWithJWT.model.dto.userregister.UserDtoResponse;
+import com.example.autorepairsWithJWT.model.dto.userregister.UserRegisterRequest;
+import com.example.autorepairsWithJWT.model.dto.userregister.UserRoleObject;
 import com.example.autorepairsWithJWT.model.entity.UserEntity;
 import com.example.autorepairsWithJWT.model.entity.UserRoleEntity;
 import com.example.autorepairsWithJWT.model.enums.UserRoleEnum;
 import com.example.autorepairsWithJWT.repository.UserRepository;
 import com.example.autorepairsWithJWT.repository.UserRoleRepository;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService implements InitializableService {
     private final UserRepository userRepository;
     private final UserRoleRepository userRoleRepository;
     private final PasswordEncoder passwordEncoder;
+    private final StructMapper structMapper;
 
-    public UserService(UserRepository userRepository,
-                       UserRoleRepository userRoleRepository, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, UserRoleRepository userRoleRepository,
+                       PasswordEncoder passwordEncoder, StructMapper structMapper) {
         this.userRepository = userRepository;
         this.userRoleRepository = userRoleRepository;
         this.passwordEncoder = passwordEncoder;
+        this.structMapper = structMapper;
     }
 
     @Override
@@ -82,22 +88,18 @@ public class UserService implements InitializableService {
         userRepository.save(user);
     }
 
-    public Long registerNewUser(UserRegisterRequestResponse userRegisterRequestResponse) {
-        // add check for username exists in a DB
-        //TODO: exception user already exists
-        if (userRepository.existsUserEntityByUsername(userRegisterRequestResponse.getUsername())) {
-            return -1L;
+    public UserEntity registerNewUser(UserRegisterRequest userRegisterRequest) {
+        if (userRepository.existsUserEntityByUsername(userRegisterRequest.getUsername())) {
+            throw new NotFoundUsernameEmailException("Username %s is already occupied!".formatted(userRegisterRequest.getUsername()));
         }
 
-        // add check for еmail exists in a DB
-        //TODO: exception user email already exists
-        if (userRepository.existsUserEntityByEmail(userRegisterRequestResponse.getEmail())) {
-            return -2L;
+        if (userRepository.existsUserEntityByEmail(userRegisterRequest.getEmail())) {
+            throw new NotFoundUsernameEmailException("Email %s is already occupied!".formatted(userRegisterRequest.getEmail()));
         }
 
         List<UserRoleEntity> userRoleEntities = new ArrayList<>();
 
-        for (UserRoleObject userRoleObject : userRegisterRequestResponse.getUserRoles()) {
+        for (UserRoleObject userRoleObject : userRegisterRequest.getUserRoles()) {
             UserRoleEntity userRoleEntityCurr = null;
             String userRole = userRoleObject.getUserRole();
             switch (userRole) {
@@ -111,27 +113,32 @@ public class UserService implements InitializableService {
 
         UserEntity newUser =
                 new UserEntity().
-                        setEmail(userRegisterRequestResponse.getEmail()).
-                        setUsername(userRegisterRequestResponse.getUsername()).
-                        setFirstName(userRegisterRequestResponse.getFirstName()).
-                        setLastName(userRegisterRequestResponse.getLastName()).
-                        setPassword(passwordEncoder.encode(userRegisterRequestResponse.getPassword())).
+                        setEmail(userRegisterRequest.getEmail()).
+                        setUsername(userRegisterRequest.getUsername()).
+                        setFirstName(userRegisterRequest.getFirstName()).
+                        setLastName(userRegisterRequest.getLastName()).
+                        setPassword(passwordEncoder.encode(userRegisterRequest.getPassword())).
                         setUserRoles(userRoleEntities);
 
-        UserEntity savedUserEntity = userRepository.save(newUser);
-
-        return savedUserEntity.getId();
+        return userRepository.save(newUser);
     }
 
-    public UserEntity findUserById(Long userId) {
-        return this.userRepository.findById(userId)
-                .orElseThrow(() -> new UsernameNotFoundException("User with id " + userId + " not found"));
+    //TODO:
+    public UserDtoResponse findUserById(Long userId) {
+        Optional<UserEntity> userEntityOpt = this.userRepository.findById(userId);
 
+        return
+                userEntityOpt
+                        .map(usr -> structMapper.userEntityToUserDtoResponse(usr))
+                        .orElseThrow(() -> new NotFoundUserException("User with id " + userId + " not found"));
     }
 
-    public List<UserEntity> findAllUsers() {
+    public List<UserDtoResponse> findAllUsers() {
         List<UserEntity> all = this.userRepository.findAll();
-        return all;
+
+        return all.stream()
+                .map(usr -> structMapper.userEntityToUserDtoResponse(usr))
+                .collect(Collectors.toList());
     }
 
     public Optional<UserEntity> findUserByUsernameAndPassword(String username, String password) {

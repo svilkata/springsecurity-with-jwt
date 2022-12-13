@@ -2,19 +2,29 @@ package com.example.autorepairsWithJWT.config.mapstruct;
 
 import com.example.autorepairsWithJWT.model.dto.sparepart.RimCreatedModifiedResponse;
 import com.example.autorepairsWithJWT.model.dto.sparepart.TyreCreatedModifiedResponse;
+import com.example.autorepairsWithJWT.model.dto.userregister.UserDtoResponse;
 import com.example.autorepairsWithJWT.model.entity.RimEntity;
 import com.example.autorepairsWithJWT.model.entity.TyreEntity;
+import com.example.autorepairsWithJWT.model.entity.UserEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.NullValuePropertyMappingStrategy;
 
 @Mapper(componentModel = "spring")  //exposed as a Spring bean
-public interface StructMapper {
+public abstract class StructMapper {
+
+    @Mapping(target = "fullname", expression="java(mapFirstNameLastNameToFullname(userEntity))")
+    public abstract UserDtoResponse userEntityToUserDtoResponse(UserEntity userEntity);
+
+    public String mapFirstNameLastNameToFullname(UserEntity userEntity) {
+        return userEntity.getFirstName() + " " + userEntity.getLastName();
+    }
 
     @Mapping(target = "id", source = "id")
-    RimCreatedModifiedResponse rimEntityToRimCreatedModifiedResponseJsonDTO(RimEntity rimEntity);
+    public abstract RimCreatedModifiedResponse rimEntityToRimCreatedModifiedResponseJsonDTO(RimEntity rimEntity);
 
     @Mapping(target = "id", source = "id")
-    TyreCreatedModifiedResponse tyreEntityToTyreCreatedModifiedResponseJsonDTO(TyreEntity tyreEntity);
+    public abstract TyreCreatedModifiedResponse tyreEntityToTyreCreatedModifiedResponseJsonDTO(TyreEntity tyreEntity);
 
 }
 

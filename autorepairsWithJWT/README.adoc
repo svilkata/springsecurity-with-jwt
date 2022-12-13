@@ -5,21 +5,24 @@
 * You can register a new user
 * You can authenticate/log a user
 * Spareparts for the moment are filters, rims and tyres. 
-  * Anyone can see public all the spareparts
-  * Only authenticated users can create new sparepart items, and update them
-  * Only authenticated users with admin role has the authority to delete spareparts from the database
+* Anyone can see all the spareparts as they are public
+* Only authenticated users can create new sparepart items, and update them
+* Only authenticated users with admin role has the authority:
+    - to delete spareparts from the database
+    - to see all users or specific user
 * The database comes with initially generated data based on the OPEN-CLOSE principle
-* We use a bean exposing the Pbkdf2PasswordEncoder() PasswordEncoder - so passwords are saved in the database encoded, and during password check
-* Used in the project MapStruct and ModelMapper
-
-
+* We save the data in MySQL database using Spring Data and Hibernate
+* We use a bean exposing the Pbkdf2PasswordEncoder() PasswordEncoder - so passwords are saved in the database encoded
+* MapStruct and ModelMapper are used in the project
+* A `SecurityConfigNewSpring.java` class in `config` package- implementation of the new Spring Security configuration way
 * In order to start testing the project on POSTMAN, you might better look also the documentation of the other project https://github.com/svilkata/springsecurity-with-jwt/tree/master/JWT-SimpleDemo[JWT-SimpleDemo] -
 a bearer JWT token should be added as an Authorization header for all authenticated https requests.
-
-
 * Sample request info (endpoint and body) are given in comments above each controller in the code of the `web` folder.
+* We return a response to any endpoint only with body DTO  or with simple message or with error message (i.e. working on the web controller layer only with DTOs), and working on the service layer with entities.
 
-// TODO: check too many comments / check exceptions (@ControllerAdvice) / check register / check new way
+// TODO: check TODOs
+// struct map - to clear
+// check exceptions (@ControllerAdvice)
+// replace/use in the end  the updated config security chain NewSpring
 
 
-* We save the data in MySQL database using Spring Data and Hibernate

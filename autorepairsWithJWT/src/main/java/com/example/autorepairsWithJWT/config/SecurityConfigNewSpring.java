@@ -1,19 +1,17 @@
-package com.example.autorepairsWithJWT.config;
+/*package com.example.autorepairsWithJWT.config;
 
 import com.example.autorepairsWithJWT.model.enums.UserRoleEnum;
-import com.example.autorepairsWithJWT.service.AppUserDetailsService;
 import com.example.autorepairsWithJWT.utils.JwtTokenFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -22,23 +20,15 @@ import org.springframework.web.filter.CorsFilter;
 import javax.servlet.http.HttpServletResponse;
 
 @Configuration
-@EnableWebSecurity
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
-    private final AppUserDetailsService appUserDetailsService;
+public class SecurityConfigNewSpring {
     private final JwtTokenFilter jwtTokenFilter;
 
-    public SecurityConfig(AppUserDetailsService appUserDetailsService, JwtTokenFilter jwtTokenFilter) {
-        this.appUserDetailsService = appUserDetailsService;
+    public SecurityConfigNewSpring(JwtTokenFilter jwtTokenFilter) {
         this.jwtTokenFilter = jwtTokenFilter;
     }
 
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(appUserDetailsService);
-    }
-
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
+    @Bean
+    public SecurityFilterChain configure(HttpSecurity http) throws Exception {
         // Enabling CORS and disable CSRF
         http = http.cors().and().csrf().disable();
 
@@ -66,15 +56,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // I) *Public endpoints*
                 .authorizeRequests()
                 // everyone can login and register
-                .antMatchers("/", "/users/login", "/users/register").permitAll()
+                .antMatchers("/", "/users/login/**", "/users/register/**").permitAll()
                 //other specific public endpoints
                 .antMatchers(HttpMethod.GET, "/spareparts/rims/all", "/spareparts/rims/{id}").permitAll()
                 .antMatchers(HttpMethod.GET, "/spareparts/tyres/all", "/spareparts/tyres/{id}").permitAll()
                 .antMatchers(HttpMethod.GET, "/spareparts/filters/all", "/spareparts/filters/{id}").permitAll()
 
                 // II) *Private endpoints*
-                //specific authorized endpoints only by user with admin role (/users/login and /users/register precede the below endpoints /users/**)
-                .antMatchers(HttpMethod.GET, "/users/**").hasRole(UserRoleEnum.ADMIN.name())
+                //specific authorized endpoints only by user with admin role
                 .antMatchers(HttpMethod.DELETE, "/spareparts/rims/{id}").hasRole(UserRoleEnum.ADMIN.name())
                 .antMatchers(HttpMethod.DELETE, "/spareparts/tyres/{id}").hasRole(UserRoleEnum.ADMIN.name())
                 .antMatchers(HttpMethod.DELETE, "/spareparts/filters/{id}").hasRole(UserRoleEnum.ADMIN.name())
@@ -86,29 +75,20 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         // Add JWT token filter
         http.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
+
+        return http.build();
     }
 
     //Access to the authentication manager - by default it is not publicly accessible
-    @Override
     @Bean
-    public AuthenticationManager authenticationManagerBean() throws Exception {
-        return super.authenticationManagerBean();
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
+        return authConfig.getAuthenticationManager();
     }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new Pbkdf2PasswordEncoder();
     }
-
-//    @Bean
-//    public PasswordEncoder passwordEncoder() {
-//        return new BCryptPasswordEncoder();
-//    }
-
-//    @Bean
-//    public PasswordEncoder passwordEncoder() {
-//        return NoOpPasswordEncoder.getInstance();
-//    }
 
     // Used by Spring Security if CORS is enabled.
     @Bean
@@ -124,12 +104,4 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 }
 
-
-
-
-
-
-
-
-
-
+ */
