@@ -1,6 +1,6 @@
-#Autorepairs project - Spring Security configured with JWT
+= Autorepairs project - Spring Security configured with JWT
 
-##This is a demo project for autorepairs shop which maintains a database about parts for vehicles.
+== This is a demo project for autorepairs shop which maintains a database about parts for vehicles.
 
 * You can register a new user
 * You can authenticate/log a user
@@ -11,11 +11,11 @@
 * The database comes with initially generated data based on the OPEN-CLOSE principle
 
 
-* In order to start testing the project on POSTMAN, you might better look also the documentation of the other project ../JWT-SimpleDemo - 
+* In order to start testing the project on POSTMAN, you might better look also the documentation of the other project https://github.com/svilkata/springsecurity-with-jwt/tree/master/JWT-SimpleDemo[JWT-SimpleDemo] -
 a bearer JWT token should be added as an Authorization header for all authenticated https requests.
 
 
-* Sample request info (endpoint and body when requested) are given in comments above each controller in the `web` folder.
+* Sample request info (endpoint and body) are given in comments above each controller in the code of the `web` folder.
 
 //TODO: check too many comments / check exceptions (@ControllerAdvice) / check register / check when with real PasswordEncoder / 
 
