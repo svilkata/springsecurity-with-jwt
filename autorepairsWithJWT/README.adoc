@@ -9,6 +9,8 @@
   * Only authenticated users can create new sparepart items, and update them
   * Only authenticated users with admin role has the authority to delete spareparts from the database
 * The database comes with initially generated data based on the OPEN-CLOSE principle
+* We use a bean exposing the Pbkdf2PasswordEncoder() PasswordEncoder - so passwords are saved in the database encoded, and during password check
+* Used in the project MapStruct and ModelMapper
 
 
 * In order to start testing the project on POSTMAN, you might better look also the documentation of the other project https://github.com/svilkata/springsecurity-with-jwt/tree/master/JWT-SimpleDemo[JWT-SimpleDemo] -
@@ -17,7 +19,7 @@ a bearer JWT token should be added as an Authorization header for all authentica
 
 * Sample request info (endpoint and body) are given in comments above each controller in the code of the `web` folder.
 
-//TODO: check too many comments / check exceptions (@ControllerAdvice) / check register / check when with real PasswordEncoder / 
+// TODO: check too many comments / check exceptions (@ControllerAdvice) / check register / check new way
 
 
 * We save the data in MySQL database using Spring Data and Hibernate

@@ -3,19 +3,19 @@ package com.example.autorepairsWithJWT.model.dto.sparepart;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class FilterCreateModifyRequestJsonDTO {
+public class FilterCreateModifyRequest {
     private String brand;
     private String model;
     private String modification;
 
-    public FilterCreateModifyRequestJsonDTO() {
+    public FilterCreateModifyRequest() {
     }
 
     public String getBrand() {
         return brand;
     }
 
-    public FilterCreateModifyRequestJsonDTO setBrand(String brand) {
+    public FilterCreateModifyRequest setBrand(String brand) {
         this.brand = brand;
         return this;
     }
@@ -24,7 +24,7 @@ public class FilterCreateModifyRequestJsonDTO {
         return model;
     }
 
-    public FilterCreateModifyRequestJsonDTO setModel(String model) {
+    public FilterCreateModifyRequest setModel(String model) {
         this.model = model;
         return this;
     }
@@ -33,7 +33,7 @@ public class FilterCreateModifyRequestJsonDTO {
         return modification;
     }
 
-    public FilterCreateModifyRequestJsonDTO setModification(String modification) {
+    public FilterCreateModifyRequest setModification(String modification) {
         this.modification = modification;
         return this;
     }

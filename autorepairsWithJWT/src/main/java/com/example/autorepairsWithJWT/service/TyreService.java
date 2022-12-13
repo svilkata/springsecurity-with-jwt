@@ -4,8 +4,8 @@ import com.example.autorepairsWithJWT.config.mapstruct.StructMapper;
 import com.example.autorepairsWithJWT.exception.NotFoundItemToDeleteException;
 import com.example.autorepairsWithJWT.exception.NotFoundItemToUpdateException;
 import com.example.autorepairsWithJWT.init.InitializableService;
-import com.example.autorepairsWithJWT.model.dto.sparepart.TyreCreateModifyRequestJsonDTO;
-import com.example.autorepairsWithJWT.model.dto.sparepart.TyreCreatedModifiedResponseJsonDTO;
+import com.example.autorepairsWithJWT.model.dto.sparepart.TyreCreateModifyRequest;
+import com.example.autorepairsWithJWT.model.dto.sparepart.TyreCreatedModifiedResponse;
 import com.example.autorepairsWithJWT.model.entity.TyreEntity;
 import com.example.autorepairsWithJWT.model.enums.TyreKindEnum;
 import com.example.autorepairsWithJWT.repository.TyreRepository;
@@ -58,31 +58,31 @@ public class TyreService implements InitializableService {
         return this.tyreRepository.findAll();
     }
 
-    public TyreCreatedModifiedResponseJsonDTO addNewTyre(TyreCreateModifyRequestJsonDTO tyreCreateModifyRequestJsonDTO) {
-        TyreEntity newTyreToAdd = this.modelMapper.map(tyreCreateModifyRequestJsonDTO, TyreEntity.class);
+    //TODO: make it here only with modelMapper???
+    public TyreCreatedModifiedResponse addNewTyre(TyreCreateModifyRequest tyreCreateModifyRequest) {
+        TyreEntity newTyreToAdd = this.modelMapper.map(tyreCreateModifyRequest, TyreEntity.class);
 
         TyreEntity savedInDB = tyreRepository.save(newTyreToAdd);
-        TyreCreatedModifiedResponseJsonDTO tyreCreatedModifiedResponseJsonDTO =
+        TyreCreatedModifiedResponse tyreCreatedModifiedResponse =
                 this.structMapper.tyreEntityToTyreCreatedModifiedResponseJsonDTO(savedInDB);
 
-        return tyreCreatedModifiedResponseJsonDTO;
+        return tyreCreatedModifiedResponse;
     }
 
-    public TyreCreatedModifiedResponseJsonDTO modifyExistingTyre(Long tyreId, TyreCreateModifyRequestJsonDTO tyreCreateModifyRequestJsonDTO) {
+    public TyreCreatedModifiedResponse modifyExistingTyre(Long tyreId, TyreCreateModifyRequest tyreCreateModifyRequest) {
         Optional<TyreEntity> tyreOpt = this.tyreRepository.findById(tyreId);
         if (tyreOpt.isEmpty()) {
             throw new NotFoundItemToUpdateException("You are trying to update a non-existing item");
         }
 
-        TyreEntity tyreToModify = this.modelMapper.map(tyreCreateModifyRequestJsonDTO, TyreEntity.class);
-        //We set here the id of the TyreEntity
+        TyreEntity tyreToModify = this.modelMapper.map(tyreCreateModifyRequest, TyreEntity.class);
         tyreToModify.setId(tyreId);
 
         TyreEntity savedInDB = tyreRepository.save(tyreToModify);
-        TyreCreatedModifiedResponseJsonDTO tyreCreatedModifiedResponseJsonDTO =
+        TyreCreatedModifiedResponse tyreCreatedModifiedResponse =
                 this.structMapper.tyreEntityToTyreCreatedModifiedResponseJsonDTO(savedInDB);
 
-        return tyreCreatedModifiedResponseJsonDTO;
+        return tyreCreatedModifiedResponse;
     }
 
     public void deleteTyreById(Long tyreId) {

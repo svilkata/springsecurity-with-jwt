@@ -1,7 +1,7 @@
 package com.example.autorepairsWithJWT.web;
 
-import com.example.autorepairsWithJWT.model.dto.sparepart.RimCreateModifyRequestJsonDTO;
-import com.example.autorepairsWithJWT.model.dto.sparepart.RimCreatedModifiedResponseJsonDTO;
+import com.example.autorepairsWithJWT.model.dto.sparepart.RimCreateModifyRequest;
+import com.example.autorepairsWithJWT.model.dto.sparepart.RimCreatedModifiedResponse;
 import com.example.autorepairsWithJWT.model.entity.RimEntity;
 import com.example.autorepairsWithJWT.service.RimService;
 import org.springframework.http.ResponseEntity;
@@ -43,18 +43,18 @@ public class RimController {
     //        "inches": "15"
     //    }
     @PostMapping("/spareparts/rims")
-    public ResponseEntity<RimCreatedModifiedResponseJsonDTO> createRim(
-            @RequestBody RimCreateModifyRequestJsonDTO rimCreateModifyRequestJsonDTO,
+    public ResponseEntity<RimCreatedModifiedResponse> createRim(
+            @RequestBody RimCreateModifyRequest rimCreateModifyRequest,
             UriComponentsBuilder builder) {
 
-        RimCreatedModifiedResponseJsonDTO rimCreatedModifiedResponseJsonDTO = rimService.addNewRim(rimCreateModifyRequestJsonDTO);
+        RimCreatedModifiedResponse rimCreatedModifiedResponse = rimService.addNewRim(rimCreateModifyRequest);
         URI location = builder.path("/spareparts/rims/{id}")
-                .buildAndExpand(rimCreatedModifiedResponseJsonDTO.getId())
+                .buildAndExpand(rimCreatedModifiedResponse.getId())
                 .toUri();
 
         return ResponseEntity
                 .created(location)
-                .body(rimCreatedModifiedResponseJsonDTO);
+                .body(rimCreatedModifiedResponse);
     }
 
     //calling PUT on http://localhost:8000/spareparts/edit/rims/3
@@ -63,13 +63,13 @@ public class RimController {
     //        "inches": "20"
     //    }
     @PutMapping("/spareparts/edit/rims/{rimId}")
-    public ResponseEntity<RimCreatedModifiedResponseJsonDTO> ModifyRim(
+    public ResponseEntity<RimCreatedModifiedResponse> ModifyRim(
             @PathVariable("rimId") Long rimId,
-            @RequestBody RimCreateModifyRequestJsonDTO rimCreateModifyRequestJsonDTO,
+            @RequestBody RimCreateModifyRequest rimCreateModifyRequest,
             UriComponentsBuilder builder) {
 
-        RimCreatedModifiedResponseJsonDTO rimCreatedModifiedResponseJsonDTO =
-                rimService.modifyExistingRim(rimId, rimCreateModifyRequestJsonDTO);
+        RimCreatedModifiedResponse rimCreatedModifiedResponse =
+                rimService.modifyExistingRim(rimId, rimCreateModifyRequest);
 
         URI location = builder.path("/spareparts/rims/{id}")
                 .buildAndExpand(rimId)
@@ -77,7 +77,7 @@ public class RimController {
 
         return ResponseEntity
                 .created(location)
-                .body(rimCreatedModifiedResponseJsonDTO);
+                .body(rimCreatedModifiedResponse);
     }
 
     //calling DELETE on http://localhost:8000/spareparts/rims/4

@@ -1,6 +1,6 @@
 package com.example.autorepairsWithJWT.web;
 
-import com.example.autorepairsWithJWT.model.dto.userauth.UserRegisterRequestJsonBodyDTO;
+import com.example.autorepairsWithJWT.model.dto.userauth.UserRegisterRequestResponse;
 import com.example.autorepairsWithJWT.model.entity.UserEntity;
 import com.example.autorepairsWithJWT.service.UserService;
 import org.springframework.http.HttpStatus;
@@ -20,15 +20,17 @@ public class RegistrationController {
         this.userService = userService;
     }
 
+    //TODO: this operation should be accessible only by user with admin role
     //called on http://localhost:8080/users/register/1
     @GetMapping("/users/register/{userId}")
     public ResponseEntity<UserEntity> getOneUser(@PathVariable Long userId) {
-        Optional<UserEntity> userEntityOpt = this.userService.findUserById(userId);
-        return userEntityOpt.isEmpty()
+        UserEntity userEntity = this.userService.findUserById(userId);
+        return userEntity == null
                 ? ResponseEntity.notFound().build()
-                : ResponseEntity.ok(userEntityOpt.get());
+                : ResponseEntity.ok(userEntity);
     }
 
+    //TODO: this operation should be accessible only by user with admin role
     //called on http://localhost:8000/users/register/all
     @GetMapping("/users/register/all")
     public ResponseEntity<List<UserEntity>> getAllUsers() {
@@ -55,12 +57,12 @@ public class RegistrationController {
 //    ]
 //    }
     @PostMapping("/users/register")
-    public ResponseEntity<String> createUser(
-            @RequestBody UserRegisterRequestJsonBodyDTO userRegisterRequestJsonBodyDTO,   //десериализация на body-то до Java обект – пропъртитата на боди-то на нашата заявка ще бъдат популирани върху нашето DTO
+    public ResponseEntity<?> createUser(
+            @RequestBody UserRegisterRequestResponse userRegisterRequestResponse,   //десериализация на body-то до Java обект – пропъртитата на боди-то на нашата заявка ще бъдат популирани върху нашето DTO
             UriComponentsBuilder builder) {
-        System.out.println(userRegisterRequestJsonBodyDTO);
+        System.out.println(userRegisterRequestResponse);
 
-        Long userId = userService.registerNewUser(userRegisterRequestJsonBodyDTO);
+        Long userId = userService.registerNewUser(userRegisterRequestResponse);
         if (userId == -1L) {
             return new ResponseEntity<>("Username is already taken!", HttpStatus.BAD_REQUEST);
         }
@@ -75,6 +77,6 @@ public class RegistrationController {
 
         return ResponseEntity
                 .created(location)
-                .body("User " + userRegisterRequestJsonBodyDTO.getUsername() + " has been registered successfully");
+                .body("User " + userRegisterRequestResponse.getUsername() + " has been registered successfully");
     }
 }

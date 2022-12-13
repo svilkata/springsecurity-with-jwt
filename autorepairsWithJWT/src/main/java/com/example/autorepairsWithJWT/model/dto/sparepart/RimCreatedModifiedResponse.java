@@ -3,18 +3,28 @@ package com.example.autorepairsWithJWT.model.dto.sparepart;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class RimCreateModifyRequestJsonDTO {
+public class RimCreatedModifiedResponse {
+    private Long id;
     private String metalKind;
     private String inches;
 
-    public RimCreateModifyRequestJsonDTO() {
+    public RimCreatedModifiedResponse() {
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public RimCreatedModifiedResponse setId(Long id) {
+        this.id = id;
+        return this;
     }
 
     public String getMetalKind() {
         return metalKind;
     }
 
-    public RimCreateModifyRequestJsonDTO setMetalKind(String metalKind) {
+    public RimCreatedModifiedResponse setMetalKind(String metalKind) {
         this.metalKind = metalKind;
         return this;
     }
@@ -23,16 +33,8 @@ public class RimCreateModifyRequestJsonDTO {
         return inches;
     }
 
-    public RimCreateModifyRequestJsonDTO setInches(String inches) {
+    public RimCreatedModifiedResponse setInches(String inches) {
         this.inches = inches;
         return this;
-    }
-
-    @Override
-    public String toString() {
-        return "RimJsonDTO{" +
-                "metalKind='" + metalKind + '\'' +
-                ", inches='" + inches + '\'' +
-                '}';
     }
 }

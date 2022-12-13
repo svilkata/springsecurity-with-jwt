@@ -3,7 +3,7 @@ package com.example.autorepairsWithJWT.service;
 import com.example.autorepairsWithJWT.exception.NotFoundItemToDeleteException;
 import com.example.autorepairsWithJWT.exception.NotFoundItemToUpdateException;
 import com.example.autorepairsWithJWT.init.InitializableService;
-import com.example.autorepairsWithJWT.model.dto.sparepart.FilterCreateModifyRequestJsonDTO;
+import com.example.autorepairsWithJWT.model.dto.sparepart.FilterCreateModifyRequest;
 import com.example.autorepairsWithJWT.model.entity.FilterEntity;
 import com.example.autorepairsWithJWT.repository.FilterRepository;
 import org.springframework.stereotype.Service;
@@ -45,12 +45,12 @@ public class FilterService implements InitializableService {
         return this.filterRepository.findAll();
     }
 
-    public Long addNewFilter(FilterCreateModifyRequestJsonDTO filterCreateModifyRequestJsonDTO) {
+    public Long addNewFilter(FilterCreateModifyRequest filterCreateModifyRequest) {
         FilterEntity newFilterToAdd =
                 new FilterEntity()
-                        .setBrand(filterCreateModifyRequestJsonDTO.getBrand())
-                        .setModel(filterCreateModifyRequestJsonDTO.getModel())
-                        .setModification(filterCreateModifyRequestJsonDTO.getModification());
+                        .setBrand(filterCreateModifyRequest.getBrand())
+                        .setModel(filterCreateModifyRequest.getModel())
+                        .setModification(filterCreateModifyRequest.getModification());
 
 
         FilterEntity savedInDB = filterRepository.save(newFilterToAdd);
@@ -58,17 +58,16 @@ public class FilterService implements InitializableService {
         return savedInDB.getId();
     }
 
-    public Long modifyExistingFilter(Long filterId, FilterCreateModifyRequestJsonDTO filterCreateModifyRequestJsonDTO) {
+    public Long modifyExistingFilter(Long filterId, FilterCreateModifyRequest filterCreateModifyRequest) {
         Optional<FilterEntity> filterOpt = this.filterRepository.findById(filterId);
         if (filterOpt.isEmpty()) {
             throw new NotFoundItemToUpdateException("You are trying to update a non-existing item");
         }
 
-        //We have set here already the id of the FilterEntity
         FilterEntity filterToModify = filterOpt.get()
-                .setBrand(filterCreateModifyRequestJsonDTO.getBrand())
-                .setModel(filterCreateModifyRequestJsonDTO.getModel())
-                .setModification(filterCreateModifyRequestJsonDTO.getModification());
+                .setBrand(filterCreateModifyRequest.getBrand())
+                .setModel(filterCreateModifyRequest.getModel())
+                .setModification(filterCreateModifyRequest.getModification());
 
         FilterEntity savedInDB = filterRepository.save(filterToModify);
 

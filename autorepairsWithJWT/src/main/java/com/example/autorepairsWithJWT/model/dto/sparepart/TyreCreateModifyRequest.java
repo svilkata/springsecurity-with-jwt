@@ -3,7 +3,7 @@ package com.example.autorepairsWithJWT.model.dto.sparepart;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class TyreCreateModifyRequestJsonDTO {
+public class TyreCreateModifyRequest {
     private String tyreKind;
     private String brand;
     private String width;
@@ -11,14 +11,14 @@ public class TyreCreateModifyRequestJsonDTO {
     private String inches;
     private String flat;
 
-    public TyreCreateModifyRequestJsonDTO() {
+    public TyreCreateModifyRequest() {
     }
 
     public String getTyreKind() {
         return tyreKind;
     }
 
-    public TyreCreateModifyRequestJsonDTO setTyreKind(String tyreKind) {
+    public TyreCreateModifyRequest setTyreKind(String tyreKind) {
         this.tyreKind = tyreKind;
         return this;
     }
@@ -27,7 +27,7 @@ public class TyreCreateModifyRequestJsonDTO {
         return brand;
     }
 
-    public TyreCreateModifyRequestJsonDTO setBrand(String brand) {
+    public TyreCreateModifyRequest setBrand(String brand) {
         this.brand = brand;
         return this;
     }
@@ -36,7 +36,7 @@ public class TyreCreateModifyRequestJsonDTO {
         return width;
     }
 
-    public TyreCreateModifyRequestJsonDTO setWidth(String width) {
+    public TyreCreateModifyRequest setWidth(String width) {
         this.width = width;
         return this;
     }
@@ -45,7 +45,7 @@ public class TyreCreateModifyRequestJsonDTO {
         return height;
     }
 
-    public TyreCreateModifyRequestJsonDTO setHeight(String height) {
+    public TyreCreateModifyRequest setHeight(String height) {
         this.height = height;
         return this;
     }
@@ -54,7 +54,7 @@ public class TyreCreateModifyRequestJsonDTO {
         return inches;
     }
 
-    public TyreCreateModifyRequestJsonDTO setInches(String inches) {
+    public TyreCreateModifyRequest setInches(String inches) {
         this.inches = inches;
         return this;
     }
@@ -63,7 +63,7 @@ public class TyreCreateModifyRequestJsonDTO {
         return flat;
     }
 
-    public TyreCreateModifyRequestJsonDTO setFlat(String flat) {
+    public TyreCreateModifyRequest setFlat(String flat) {
         this.flat = flat;
         return this;
     }

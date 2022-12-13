@@ -1,6 +1,6 @@
 package com.example.autorepairsWithJWT.web;
 
-import com.example.autorepairsWithJWT.model.dto.sparepart.FilterCreateModifyRequestJsonDTO;
+import com.example.autorepairsWithJWT.model.dto.sparepart.FilterCreateModifyRequest;
 import com.example.autorepairsWithJWT.model.entity.FilterEntity;
 import com.example.autorepairsWithJWT.model.entity.RimEntity;
 import com.example.autorepairsWithJWT.service.FilterService;
@@ -46,10 +46,10 @@ public class FilterController {
 //    }
     @PostMapping("/spareparts/filters")
     public ResponseEntity<RimEntity> createRim(
-            @RequestBody FilterCreateModifyRequestJsonDTO filterCreateModifyRequestJsonDTO,   //десериализация на body-то до Java обект – пропъртитата на боди-то на нашата заявка ще бъдат популирани върху нашето DTO
+            @RequestBody FilterCreateModifyRequest filterCreateModifyRequest,   //десериализация на body-то до Java обект – пропъртитата на боди-то на нашата заявка ще бъдат популирани върху нашето DTO
             UriComponentsBuilder builder) {
 
-        Long rimId = filterService.addNewFilter(filterCreateModifyRequestJsonDTO);
+        Long rimId = filterService.addNewFilter(filterCreateModifyRequest);
         URI location = builder.path("/spareparts/filters/{id}")
                 .buildAndExpand(rimId)
                 .toUri();
@@ -66,10 +66,10 @@ public class FilterController {
     @PutMapping("/spareparts/edit/filters/{filterId}")
     public ResponseEntity<FilterEntity> ModifyFilter(
             @PathVariable("filterId") Long filterId,
-            @RequestBody FilterCreateModifyRequestJsonDTO filterCreateModifyRequestJsonDTO,   //десериализация на body-то до Java обект – пропъртитата на боди-то на нашата заявка ще бъдат популирани върху нашето DTO
+            @RequestBody FilterCreateModifyRequest filterCreateModifyRequest,   //десериализация на body-то до Java обект – пропъртитата на боди-то на нашата заявка ще бъдат популирани върху нашето DTO
             UriComponentsBuilder builder) {
 
-        Long isFilterModified = filterService.modifyExistingFilter(filterId, filterCreateModifyRequestJsonDTO);
+        Long isFilterModified = filterService.modifyExistingFilter(filterId, filterCreateModifyRequest);
 
         URI location = builder.path("/spareparts/filters/{id}")
                 .buildAndExpand(filterId)

@@ -1,13 +1,15 @@
 package com.example.autorepairsWithJWT.service;
 
 import com.example.autorepairsWithJWT.init.InitializableService;
-import com.example.autorepairsWithJWT.model.dto.userauth.UserRegisterRequestJsonBodyDTO;
-import com.example.autorepairsWithJWT.model.dto.userauth.UserRoleUserRegisterJsonDTO;
+import com.example.autorepairsWithJWT.model.dto.userauth.UserRegisterRequestResponse;
+import com.example.autorepairsWithJWT.model.dto.userauth.UserRoleObject;
 import com.example.autorepairsWithJWT.model.entity.UserEntity;
 import com.example.autorepairsWithJWT.model.entity.UserRoleEntity;
 import com.example.autorepairsWithJWT.model.enums.UserRoleEnum;
 import com.example.autorepairsWithJWT.repository.UserRepository;
 import com.example.autorepairsWithJWT.repository.UserRoleRepository;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -18,11 +20,13 @@ import java.util.Optional;
 public class UserService implements InitializableService {
     private final UserRepository userRepository;
     private final UserRoleRepository userRoleRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public UserService(UserRepository userRepository,
-                       UserRoleRepository userRoleRepository) {
+                       UserRoleRepository userRoleRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.userRoleRepository = userRoleRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -49,7 +53,7 @@ public class UserService implements InitializableService {
                 setLastName("Adminov").
                 setEmail("admin@example.com").
                 setUsername("admin").
-                setPassword("topsecrect");
+                setPassword(passwordEncoder.encode("topsecrect"));
 
         userRepository.save(admin);
     }
@@ -61,7 +65,7 @@ public class UserService implements InitializableService {
                 setLastName("Moderatorov").
                 setEmail("moderator@example.com").
                 setUsername("moderator").
-                setPassword("topsecrect");
+                setPassword(passwordEncoder.encode("topsecrect"));
 
         userRepository.save(moderator);
     }
@@ -73,27 +77,29 @@ public class UserService implements InitializableService {
                 setLastName("Userov").
                 setEmail("user@example.com").
                 setUsername("Svilen").
-                setPassword("topsecrect");
+                setPassword(passwordEncoder.encode("topsecrect"));
 
         userRepository.save(user);
     }
 
-    public Long registerNewUser(UserRegisterRequestJsonBodyDTO userRegisterRequestJsonBodyDTO) {
+    public Long registerNewUser(UserRegisterRequestResponse userRegisterRequestResponse) {
         // add check for username exists in a DB
-        if (userRepository.existsUserEntityByUsername(userRegisterRequestJsonBodyDTO.getUsername())) {
+        //TODO: exception user already exists
+        if (userRepository.existsUserEntityByUsername(userRegisterRequestResponse.getUsername())) {
             return -1L;
         }
 
         // add check for еmail exists in a DB
-        if (userRepository.existsUserEntityByEmail(userRegisterRequestJsonBodyDTO.getEmail())) {
+        //TODO: exception user email already exists
+        if (userRepository.existsUserEntityByEmail(userRegisterRequestResponse.getEmail())) {
             return -2L;
         }
 
         List<UserRoleEntity> userRoleEntities = new ArrayList<>();
 
-        for (UserRoleUserRegisterJsonDTO userRoleUserRegisterJsonDTO : userRegisterRequestJsonBodyDTO.getUserRoles()) {
+        for (UserRoleObject userRoleObject : userRegisterRequestResponse.getUserRoles()) {
             UserRoleEntity userRoleEntityCurr = null;
-            String userRole = userRoleUserRegisterJsonDTO.getUserRole();
+            String userRole = userRoleObject.getUserRole();
             switch (userRole) {
                 case "ADMIN" -> userRoleEntityCurr = this.userRoleRepository.findById(1L).get();
                 case "MODERATOR" -> userRoleEntityCurr = this.userRoleRepository.findById(2L).get();
@@ -105,11 +111,11 @@ public class UserService implements InitializableService {
 
         UserEntity newUser =
                 new UserEntity().
-                        setEmail(userRegisterRequestJsonBodyDTO.getEmail()).
-                        setUsername(userRegisterRequestJsonBodyDTO.getUsername()).
-                        setFirstName(userRegisterRequestJsonBodyDTO.getFirstName()).
-                        setLastName(userRegisterRequestJsonBodyDTO.getLastName()).
-                        setPassword(userRegisterRequestJsonBodyDTO.getPassword()).
+                        setEmail(userRegisterRequestResponse.getEmail()).
+                        setUsername(userRegisterRequestResponse.getUsername()).
+                        setFirstName(userRegisterRequestResponse.getFirstName()).
+                        setLastName(userRegisterRequestResponse.getLastName()).
+                        setPassword(passwordEncoder.encode(userRegisterRequestResponse.getPassword())).
                         setUserRoles(userRoleEntities);
 
         UserEntity savedUserEntity = userRepository.save(newUser);
@@ -117,9 +123,9 @@ public class UserService implements InitializableService {
         return savedUserEntity.getId();
     }
 
-    public Optional<UserEntity> findUserById(Long userId) {
-        return this.userRepository.findById(userId);
-//                .orElseThrow(() -> new UsernameNotFoundException("User with id " + userId + " not found"));
+    public UserEntity findUserById(Long userId) {
+        return this.userRepository.findById(userId)
+                .orElseThrow(() -> new UsernameNotFoundException("User with id " + userId + " not found"));
 
     }
 

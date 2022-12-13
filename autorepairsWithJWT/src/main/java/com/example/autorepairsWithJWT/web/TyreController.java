@@ -1,7 +1,7 @@
 package com.example.autorepairsWithJWT.web;
 
-import com.example.autorepairsWithJWT.model.dto.sparepart.TyreCreateModifyRequestJsonDTO;
-import com.example.autorepairsWithJWT.model.dto.sparepart.TyreCreatedModifiedResponseJsonDTO;
+import com.example.autorepairsWithJWT.model.dto.sparepart.TyreCreateModifyRequest;
+import com.example.autorepairsWithJWT.model.dto.sparepart.TyreCreatedModifiedResponse;
 import com.example.autorepairsWithJWT.model.entity.TyreEntity;
 import com.example.autorepairsWithJWT.service.TyreService;
 import org.springframework.http.ResponseEntity;
@@ -46,18 +46,18 @@ public class TyreController {
 //            "flat": "XL"
 //    }
     @PostMapping("/spareparts/tyres")
-    public ResponseEntity<TyreCreatedModifiedResponseJsonDTO> createTyre(
-            @RequestBody TyreCreateModifyRequestJsonDTO tyreCreateModifyRequestJsonDTO,   //десериализация на body-то до Java обект – пропъртитата на боди-то на нашата заявка ще бъдат популирани върху нашето DTO
+    public ResponseEntity<TyreCreatedModifiedResponse> createTyre(
+            @RequestBody TyreCreateModifyRequest tyreCreateModifyRequest,   //десериализация на body-то до Java обект – пропъртитата на боди-то на нашата заявка ще бъдат популирани върху нашето DTO
             UriComponentsBuilder builder) {
 
-        TyreCreatedModifiedResponseJsonDTO tyreCreatedModifiedResponseJsonDTO = tyreService.addNewTyre(tyreCreateModifyRequestJsonDTO);
+        TyreCreatedModifiedResponse tyreCreatedModifiedResponse = tyreService.addNewTyre(tyreCreateModifyRequest);
         URI location = builder.path("/spareparts/tyres/{id}")
-                .buildAndExpand(tyreCreatedModifiedResponseJsonDTO.getId())
+                .buildAndExpand(tyreCreatedModifiedResponse.getId())
                 .toUri();
 
         return ResponseEntity
                 .created(location)
-                .body(tyreCreatedModifiedResponseJsonDTO);
+                .body(tyreCreatedModifiedResponse);
     }
 
 
@@ -71,12 +71,12 @@ public class TyreController {
 //            "flat": "XL"
 //    }
     @PutMapping("/spareparts/edit/tyres/{tyreId}")
-    public ResponseEntity<TyreCreatedModifiedResponseJsonDTO> ModifyTyre(
+    public ResponseEntity<TyreCreatedModifiedResponse> ModifyTyre(
             @PathVariable("tyreId") Long tyreId,
-            @RequestBody TyreCreateModifyRequestJsonDTO tyreCreateModifyRequestJsonDTO,
+            @RequestBody TyreCreateModifyRequest tyreCreateModifyRequest,
             UriComponentsBuilder builder) {
 
-        TyreCreatedModifiedResponseJsonDTO tyreCreatedModifiedResponseJsonDTO = tyreService.modifyExistingTyre(tyreId, tyreCreateModifyRequestJsonDTO);
+        TyreCreatedModifiedResponse tyreCreatedModifiedResponse = tyreService.modifyExistingTyre(tyreId, tyreCreateModifyRequest);
 
         URI location = builder.path("/spareparts/tyres/{id}")
                 .buildAndExpand(tyreId)
@@ -84,7 +84,7 @@ public class TyreController {
 
         return ResponseEntity
                 .created(location)
-                .body(tyreCreatedModifiedResponseJsonDTO);
+                .body(tyreCreatedModifiedResponse);
     }
 
     //calling DELETE on http://localhost:8000/spareparts/tyres/4

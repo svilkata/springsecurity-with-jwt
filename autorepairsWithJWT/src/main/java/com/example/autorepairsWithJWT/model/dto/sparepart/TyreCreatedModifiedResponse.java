@@ -3,7 +3,7 @@ package com.example.autorepairsWithJWT.model.dto.sparepart;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class TyreCreatedModifiedResponseJsonDTO {
+public class TyreCreatedModifiedResponse {
     private Long id;
     private String tyreKind;
     private String brand;
@@ -12,14 +12,14 @@ public class TyreCreatedModifiedResponseJsonDTO {
     private String inches;
     private String flat;
 
-    public TyreCreatedModifiedResponseJsonDTO() {
+    public TyreCreatedModifiedResponse() {
     }
 
     public String getTyreKind() {
         return tyreKind;
     }
 
-    public TyreCreatedModifiedResponseJsonDTO setTyreKind(String tyreKind) {
+    public TyreCreatedModifiedResponse setTyreKind(String tyreKind) {
         this.tyreKind = tyreKind;
         return this;
     }
@@ -28,7 +28,7 @@ public class TyreCreatedModifiedResponseJsonDTO {
         return brand;
     }
 
-    public TyreCreatedModifiedResponseJsonDTO setBrand(String brand) {
+    public TyreCreatedModifiedResponse setBrand(String brand) {
         this.brand = brand;
         return this;
     }
@@ -37,7 +37,7 @@ public class TyreCreatedModifiedResponseJsonDTO {
         return width;
     }
 
-    public TyreCreatedModifiedResponseJsonDTO setWidth(String width) {
+    public TyreCreatedModifiedResponse setWidth(String width) {
         this.width = width;
         return this;
     }
@@ -46,7 +46,7 @@ public class TyreCreatedModifiedResponseJsonDTO {
         return height;
     }
 
-    public TyreCreatedModifiedResponseJsonDTO setHeight(String height) {
+    public TyreCreatedModifiedResponse setHeight(String height) {
         this.height = height;
         return this;
     }
@@ -55,7 +55,7 @@ public class TyreCreatedModifiedResponseJsonDTO {
         return inches;
     }
 
-    public TyreCreatedModifiedResponseJsonDTO setInches(String inches) {
+    public TyreCreatedModifiedResponse setInches(String inches) {
         this.inches = inches;
         return this;
     }
@@ -64,7 +64,7 @@ public class TyreCreatedModifiedResponseJsonDTO {
         return flat;
     }
 
-    public TyreCreatedModifiedResponseJsonDTO setFlat(String flat) {
+    public TyreCreatedModifiedResponse setFlat(String flat) {
         this.flat = flat;
         return this;
     }
@@ -73,7 +73,7 @@ public class TyreCreatedModifiedResponseJsonDTO {
         return id;
     }
 
-    public TyreCreatedModifiedResponseJsonDTO setId(Long id) {
+    public TyreCreatedModifiedResponse setId(Long id) {
         this.id = id;
         return this;
     }

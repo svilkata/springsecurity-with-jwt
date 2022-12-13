@@ -4,8 +4,8 @@ import com.example.autorepairsWithJWT.config.mapstruct.StructMapper;
 import com.example.autorepairsWithJWT.exception.NotFoundItemToDeleteException;
 import com.example.autorepairsWithJWT.exception.NotFoundItemToUpdateException;
 import com.example.autorepairsWithJWT.init.InitializableService;
-import com.example.autorepairsWithJWT.model.dto.sparepart.RimCreateModifyRequestJsonDTO;
-import com.example.autorepairsWithJWT.model.dto.sparepart.RimCreatedModifiedResponseJsonDTO;
+import com.example.autorepairsWithJWT.model.dto.sparepart.RimCreateModifyRequest;
+import com.example.autorepairsWithJWT.model.dto.sparepart.RimCreatedModifiedResponse;
 import com.example.autorepairsWithJWT.model.entity.RimEntity;
 import com.example.autorepairsWithJWT.repository.RimRepository;
 import org.springframework.stereotype.Service;
@@ -46,35 +46,35 @@ public class RimService implements InitializableService {
         return this.rimRepository.findAll();
     }
 
-    public RimCreatedModifiedResponseJsonDTO addNewRim(RimCreateModifyRequestJsonDTO rimCreateModifyRequestJsonDTO) {
+    public RimCreatedModifiedResponse addNewRim(RimCreateModifyRequest rimCreateModifyRequest) {
         RimEntity newRimToAdd =
                 new RimEntity()
-                        .setMetalKind(rimCreateModifyRequestJsonDTO.getMetalKind())
-                        .setInches(rimCreateModifyRequestJsonDTO.getInches());
+                        .setMetalKind(rimCreateModifyRequest.getMetalKind())
+                        .setInches(rimCreateModifyRequest.getInches());
 
 
         RimEntity savedInDB = rimRepository.save(newRimToAdd);
-        RimCreatedModifiedResponseJsonDTO rimCreatedModifiedResponseJsonDTO =
+        RimCreatedModifiedResponse rimCreatedModifiedResponse =
                 this.structMapper.rimEntityToRimCreatedModifiedResponseJsonDTO(savedInDB);
 
-        return rimCreatedModifiedResponseJsonDTO;
+        return rimCreatedModifiedResponse;
     }
 
-    public RimCreatedModifiedResponseJsonDTO modifyExistingRim(Long rimId, RimCreateModifyRequestJsonDTO rimCreateModifyRequestJsonDTO) {
+    public RimCreatedModifiedResponse modifyExistingRim(Long rimId, RimCreateModifyRequest rimCreateModifyRequest) {
         Optional<RimEntity> rimOpt = this.rimRepository.findById(rimId);
         if (rimOpt.isEmpty()) {
             throw new NotFoundItemToUpdateException("You are trying to update a non-existing item");
         }
 
         RimEntity rimToModify = rimOpt.get()
-                .setMetalKind(rimCreateModifyRequestJsonDTO.getMetalKind())
-                .setInches(rimCreateModifyRequestJsonDTO.getInches());
+                .setMetalKind(rimCreateModifyRequest.getMetalKind())
+                .setInches(rimCreateModifyRequest.getInches());
 
         RimEntity savedInDB = rimRepository.save(rimToModify);
-        RimCreatedModifiedResponseJsonDTO rimCreatedModifiedResponseJsonDTO =
+        RimCreatedModifiedResponse rimCreatedModifiedResponse =
                 this.structMapper.rimEntityToRimCreatedModifiedResponseJsonDTO(savedInDB);
 
-        return rimCreatedModifiedResponseJsonDTO;
+        return rimCreatedModifiedResponse;
     }
 
     public void deleteRim(Long rimId) {

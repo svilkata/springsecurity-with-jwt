@@ -1,6 +1,6 @@
 package com.example.autorepairsWithJWT.init;
 
-import com.example.autorepairsWithJWT.model.dto.sparepart.RimCreateModifyRequestJsonDTO;
+import com.example.autorepairsWithJWT.model.dto.sparepart.RimCreateModifyRequest;
 import com.example.autorepairsWithJWT.model.entity.RimEntity;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.http.HttpEntity;
@@ -33,29 +33,30 @@ public class AppInit implements CommandLineRunner {
     public void run(String... args) throws Exception {
         getAllRims();
         getOneRim();
-//        addOneRim();
+//        creteOneRimViaRestWebClientAuthorizedUser();
     }
 
     private void getAllRims() {
-        ResponseEntity<RimCreateModifyRequestJsonDTO[]> allRimsResponse = restWebClient
-                .getForEntity("http://localhost:8000/spareparts/rims/all", RimCreateModifyRequestJsonDTO[].class);
+        ResponseEntity<RimCreateModifyRequest[]> allRimsResponse = restWebClient
+                .getForEntity("http://localhost:8000/spareparts/rims/all", RimCreateModifyRequest[].class);
 
         if (allRimsResponse.hasBody()) {
-            for (RimCreateModifyRequestJsonDTO rim : allRimsResponse.getBody()) {
+            for (RimCreateModifyRequest rim : allRimsResponse.getBody()) {
                 System.out.println("Rim: " + rim);
             }
         }
     }
 
     private void getOneRim() {
-        ResponseEntity<RimCreateModifyRequestJsonDTO> oneRimResponse = restWebClient
-                .getForEntity("http://localhost:8000/spareparts/rims/1", RimCreateModifyRequestJsonDTO.class);
+        ResponseEntity<RimCreateModifyRequest> oneRimResponse = restWebClient
+                .getForEntity("http://localhost:8000/spareparts/rims/1", RimCreateModifyRequest.class);
         if (oneRimResponse.hasBody()) {
             System.out.println("Rim: " + oneRimResponse.getBody());
         }
     }
 
-    private void addOneRim() {
+    //TODO:
+    private void creteOneRimViaRestWebClientAuthorizedUser() {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
@@ -67,8 +68,8 @@ public class AppInit implements CommandLineRunner {
 //        map.add("metalKind", "bronze");
 //        map.add("inches", "15");
 
-        RimCreateModifyRequestJsonDTO newRimJsonToAdd =
-                new RimCreateModifyRequestJsonDTO()
+        RimCreateModifyRequest newRimJsonToAdd =
+                new RimCreateModifyRequest()
                         .setMetalKind("bronze")
                         .setInches("15");
 
@@ -78,13 +79,8 @@ public class AppInit implements CommandLineRunner {
 
         HttpEntity<RimEntity> request = new HttpEntity<>(newRimEntity, headers);
 
-//caught by the @RestController :)
         ResponseEntity<RimEntity> oneRimPost = restWebClient
                 .postForEntity("http://localhost:8000/spareparts/rims", request, RimEntity.class);
-
-        //If we do not have the @RestController with @PostMapping("/spareparts/rims") in class RimController,
-        // then we can update the db with the below line
-//        rimService.addNewRim(newRimJsonToAdd);
     }
 
 }

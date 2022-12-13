@@ -3,18 +3,18 @@ package com.example.autorepairsWithJWT.model.dto.userauth;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class UserRoleUserRegisterJsonDTO {
+public class UserRoleObject {
     private String id;
     private String userRole;
 
-    public UserRoleUserRegisterJsonDTO() {
+    public UserRoleObject() {
     }
 
     public String getId() {
         return id;
     }
 
-    public UserRoleUserRegisterJsonDTO setId(String id) {
+    public UserRoleObject setId(String id) {
         this.id = id;
         return this;
     }
@@ -23,7 +23,7 @@ public class UserRoleUserRegisterJsonDTO {
         return userRole;
     }
 
-    public UserRoleUserRegisterJsonDTO setUserRole(String userRole) {
+    public UserRoleObject setUserRole(String userRole) {
         this.userRole = userRole;
         return this;
     }
