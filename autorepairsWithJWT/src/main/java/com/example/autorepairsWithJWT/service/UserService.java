@@ -123,7 +123,6 @@ public class UserService implements InitializableService {
         return userRepository.save(newUser);
     }
 
-    //TODO:
     public UserDtoResponse findUserById(Long userId) {
         Optional<UserEntity> userEntityOpt = this.userRepository.findById(userId);
 
@@ -143,6 +142,14 @@ public class UserService implements InitializableService {
 
     public Optional<UserEntity> findUserByUsernameAndPassword(String username, String password) {
         return this.userRepository.findByUsernameAndPassword(username, password);
+    }
+
+    public void deleteUserById(Long userId) {
+        try {
+            this.userRepository.deleteById(userId);
+        } catch (RuntimeException e){
+            throw new NotFoundUserException("Cannot delete user with id %d as such user does not exists".formatted(userId));
+        }
     }
 
 //    public Optional<UserEntity> findUserByUsername(String username) {

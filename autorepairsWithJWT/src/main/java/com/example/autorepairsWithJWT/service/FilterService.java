@@ -1,9 +1,8 @@
 package com.example.autorepairsWithJWT.service;
 
-import com.example.autorepairsWithJWT.exception.NotFoundItemToDeleteException;
-import com.example.autorepairsWithJWT.exception.NotFoundItemToUpdateException;
+import com.example.autorepairsWithJWT.exception.NotFoundSparepart;
 import com.example.autorepairsWithJWT.init.InitializableService;
-import com.example.autorepairsWithJWT.model.dto.sparepart.FilterCreateModifyRequest;
+import com.example.autorepairsWithJWT.model.dto.sparepart.FilterRequest;
 import com.example.autorepairsWithJWT.model.entity.FilterEntity;
 import com.example.autorepairsWithJWT.repository.FilterRepository;
 import org.springframework.stereotype.Service;
@@ -45,29 +44,34 @@ public class FilterService implements InitializableService {
         return this.filterRepository.findAll();
     }
 
-    public Long addNewFilter(FilterCreateModifyRequest filterCreateModifyRequest) {
+    //TODO: finish exception handling
+    public Long addNewFilter(FilterRequest filterRequest) {
+        Optional<FilterEntity> filterEntityExists = this.filterRepository.findByBrandAndModelAndModification();
+
+        //TODO: mapstruct here to use
+        filterEntityExists
+                .map(flt -> new FilterEntity()
+                        .setBrand(filterRequest.getBrand())
+                        .setModel(filterRequest.getModel())
+                        .setModification(filterRequest.getModification()))
+                .orElseThrow(() -> new CONFLICT exception)
+
         FilterEntity newFilterToAdd =
-                new FilterEntity()
-                        .setBrand(filterCreateModifyRequest.getBrand())
-                        .setModel(filterCreateModifyRequest.getModel())
-                        .setModification(filterCreateModifyRequest.getModification());
 
 
-        FilterEntity savedInDB = filterRepository.save(newFilterToAdd);
-
-        return savedInDB.getId();
+        return this.filterRepository.save(newFilterToAdd).getId();
     }
 
-    public Long modifyExistingFilter(Long filterId, FilterCreateModifyRequest filterCreateModifyRequest) {
+    public Long modifyExistingFilter(Long filterId, FilterRequest filterRequest) {
         Optional<FilterEntity> filterOpt = this.filterRepository.findById(filterId);
         if (filterOpt.isEmpty()) {
-            throw new NotFoundItemToUpdateException("You are trying to update a non-existing item");
+            throw new NotFoundSparepart("You are trying to update a non-existing item");
         }
 
         FilterEntity filterToModify = filterOpt.get()
-                .setBrand(filterCreateModifyRequest.getBrand())
-                .setModel(filterCreateModifyRequest.getModel())
-                .setModification(filterCreateModifyRequest.getModification());
+                .setBrand(filterRequest.getBrand())
+                .setModel(filterRequest.getModel())
+                .setModification(filterRequest.getModification());
 
         FilterEntity savedInDB = filterRepository.save(filterToModify);
 
@@ -78,7 +82,7 @@ public class FilterService implements InitializableService {
         try {
             filterRepository.deleteById(filterId);
         } catch (Exception ex) {
-            throw new NotFoundItemToDeleteException("You are trying to delete a non-existing item");
+            throw new NotFoundSparepart("You are trying to delete a non-existing sparepart");
         }
 
     }

@@ -1,8 +1,7 @@
 package com.example.autorepairsWithJWT.service;
 
 import com.example.autorepairsWithJWT.config.mapstruct.StructMapper;
-import com.example.autorepairsWithJWT.exception.NotFoundItemToDeleteException;
-import com.example.autorepairsWithJWT.exception.NotFoundItemToUpdateException;
+import com.example.autorepairsWithJWT.exception.NotFoundSparepart;
 import com.example.autorepairsWithJWT.init.InitializableService;
 import com.example.autorepairsWithJWT.model.dto.sparepart.RimCreateModifyRequest;
 import com.example.autorepairsWithJWT.model.dto.sparepart.RimCreatedModifiedResponse;
@@ -63,7 +62,7 @@ public class RimService implements InitializableService {
     public RimCreatedModifiedResponse modifyExistingRim(Long rimId, RimCreateModifyRequest rimCreateModifyRequest) {
         Optional<RimEntity> rimOpt = this.rimRepository.findById(rimId);
         if (rimOpt.isEmpty()) {
-            throw new NotFoundItemToUpdateException("You are trying to update a non-existing item");
+            throw new NotFoundSparepart("You are trying to update a non-existing item");
         }
 
         RimEntity rimToModify = rimOpt.get()
@@ -81,7 +80,7 @@ public class RimService implements InitializableService {
         try {
             rimRepository.deleteById(rimId);
         } catch (Exception ex){
-            throw new NotFoundItemToDeleteException("You are trying to delete a non-existing item");
+            throw new NotFoundSparepart("You are trying to delete a non-existing item");
         }
 
     }

@@ -1,9 +1,11 @@
 package com.example.autorepairsWithJWT.config.mapstruct;
 
+import com.example.autorepairsWithJWT.model.dto.sparepart.FilterResponse;
 import com.example.autorepairsWithJWT.model.dto.sparepart.RimCreatedModifiedResponse;
 import com.example.autorepairsWithJWT.model.dto.sparepart.TyreCreatedModifiedResponse;
 import com.example.autorepairsWithJWT.model.dto.userregister.UserDtoResponse;
 import com.example.autorepairsWithJWT.model.dto.userregister.UserRoleObject;
+import com.example.autorepairsWithJWT.model.entity.FilterEntity;
 import com.example.autorepairsWithJWT.model.entity.RimEntity;
 import com.example.autorepairsWithJWT.model.entity.TyreEntity;
 import com.example.autorepairsWithJWT.model.entity.UserEntity;
@@ -15,8 +17,8 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2022-12-14T00:26:39+0200",
-    comments = "version: 1.5.3.Final, compiler: javac, environment: Java 17.0.2 (Oracle Corporation)"
+    date = "2022-12-14T12:57:29+0200",
+    comments = "version: 1.5.3.Final, compiler: javac, environment: Java 17.0.4.1 (Oracle Corporation)"
 )
 @Component
 public class StructMapperImpl extends StructMapper {
@@ -37,6 +39,22 @@ public class StructMapperImpl extends StructMapper {
         userDtoResponse.setFullname( mapFirstNameLastNameToFullname(userEntity) );
 
         return userDtoResponse;
+    }
+
+    @Override
+    public FilterResponse filterEntityToFilterResponse(FilterEntity flt) {
+        if ( flt == null ) {
+            return null;
+        }
+
+        FilterResponse filterResponse = new FilterResponse();
+
+        filterResponse.setId( flt.getId() );
+        filterResponse.setBrand( flt.getBrand() );
+        filterResponse.setModel( flt.getModel() );
+        filterResponse.setModification( flt.getModification() );
+
+        return filterResponse;
     }
 
     @Override

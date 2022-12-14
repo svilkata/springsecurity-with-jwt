@@ -1,8 +1,7 @@
 package com.example.autorepairsWithJWT.service;
 
 import com.example.autorepairsWithJWT.config.mapstruct.StructMapper;
-import com.example.autorepairsWithJWT.exception.NotFoundItemToDeleteException;
-import com.example.autorepairsWithJWT.exception.NotFoundItemToUpdateException;
+import com.example.autorepairsWithJWT.exception.NotFoundSparepart;
 import com.example.autorepairsWithJWT.init.InitializableService;
 import com.example.autorepairsWithJWT.model.dto.sparepart.TyreCreateModifyRequest;
 import com.example.autorepairsWithJWT.model.dto.sparepart.TyreCreatedModifiedResponse;
@@ -72,7 +71,7 @@ public class TyreService implements InitializableService {
     public TyreCreatedModifiedResponse modifyExistingTyre(Long tyreId, TyreCreateModifyRequest tyreCreateModifyRequest) {
         Optional<TyreEntity> tyreOpt = this.tyreRepository.findById(tyreId);
         if (tyreOpt.isEmpty()) {
-            throw new NotFoundItemToUpdateException("You are trying to update a non-existing item");
+            throw new NotFoundSparepart("You are trying to update a non-existing item");
         }
 
         TyreEntity tyreToModify = this.modelMapper.map(tyreCreateModifyRequest, TyreEntity.class);
@@ -89,7 +88,7 @@ public class TyreService implements InitializableService {
         try {
             this.tyreRepository.deleteById(tyreId);
         } catch (Exception ex){
-            throw new NotFoundItemToDeleteException("You are trying to delete a non-existing item");
+            throw new NotFoundSparepart("You are trying to delete a non-existing item");
         }
     }
 }

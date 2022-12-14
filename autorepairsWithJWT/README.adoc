@@ -9,7 +9,7 @@
 * Only authenticated users can create new sparepart items, and update them
 * Only authenticated users with admin role has the authority:
     - to delete spareparts from the database
-    - to see all users or specific user
+    - to see all users or a specific user or delete a user
 * The database comes with initially generated data based on the OPEN-CLOSE principle
 * We save the data in MySQL database using Spring Data and Hibernate
 * We use a bean exposing the Pbkdf2PasswordEncoder() PasswordEncoder - so passwords are saved in the database encoded
@@ -19,9 +19,10 @@
 a bearer JWT token should be added as an Authorization header for all authenticated https requests.
 * Sample request info (endpoint and body) are given in comments above each controller in the code of the `web` folder.
 * We return a response to any endpoint only with body DTO  or with simple message or with error message (i.e. working on the web controller layer only with DTOs), and working on the service layer with entities.
+* We process the exceptions with the @ControllerAdvice approach
 
 // TODO: check TODOs
-// struct map - to clear
+// struct map - to clear the long names
 // check exceptions (@ControllerAdvice)
 // replace/use in the end  the updated config security chain NewSpring
 

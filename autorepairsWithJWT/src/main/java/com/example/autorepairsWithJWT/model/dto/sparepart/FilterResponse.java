@@ -3,19 +3,29 @@ package com.example.autorepairsWithJWT.model.dto.sparepart;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class FilterCreateModifyRequest {
+public class FilterResponse {
+    private Long id;
     private String brand;
     private String model;
     private String modification;
 
-    public FilterCreateModifyRequest() {
+    public FilterResponse() {
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public FilterResponse setId(Long id) {
+        this.id = id;
+        return this;
     }
 
     public String getBrand() {
         return brand;
     }
 
-    public FilterCreateModifyRequest setBrand(String brand) {
+    public FilterResponse setBrand(String brand) {
         this.brand = brand;
         return this;
     }
@@ -24,7 +34,7 @@ public class FilterCreateModifyRequest {
         return model;
     }
 
-    public FilterCreateModifyRequest setModel(String model) {
+    public FilterResponse setModel(String model) {
         this.model = model;
         return this;
     }
@@ -33,7 +43,7 @@ public class FilterCreateModifyRequest {
         return modification;
     }
 
-    public FilterCreateModifyRequest setModification(String modification) {
+    public FilterResponse setModification(String modification) {
         this.modification = modification;
         return this;
     }
@@ -46,4 +56,5 @@ public class FilterCreateModifyRequest {
                 ", modification='" + modification + '\'' +
                 '}';
     }
+
 }

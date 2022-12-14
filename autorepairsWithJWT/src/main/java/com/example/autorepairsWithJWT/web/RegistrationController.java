@@ -19,18 +19,6 @@ public class RegistrationController {
         this.userService = userService;
     }
 
-    //called on http://localhost:8080/users/1
-    @GetMapping("/users/{userId}")
-    public ResponseEntity<UserDtoResponse> getOneUser(@PathVariable Long userId) {
-        return ResponseEntity.ok(this.userService.findUserById(userId));
-    }
-
-    //called on http://localhost:8000/users/all
-    @GetMapping("/users/all")
-    public ResponseEntity<List<UserDtoResponse>> getAllUsers() {
-        return ResponseEntity.ok(this.userService.findAllUsers());
-    }
-
     //called on http://localhost:8000/users/register
 //    {
 //        "email":"mmmmmmmm@example.com",

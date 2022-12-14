@@ -1,6 +1,9 @@
 package com.example.autorepairsWithJWT.web;
 
-import com.example.autorepairsWithJWT.model.dto.sparepart.FilterCreateModifyRequest;
+import com.example.autorepairsWithJWT.config.mapstruct.StructMapper;
+import com.example.autorepairsWithJWT.exception.NotFoundSparepart;
+import com.example.autorepairsWithJWT.model.dto.sparepart.FilterRequest;
+import com.example.autorepairsWithJWT.model.dto.sparepart.FilterResponse;
 import com.example.autorepairsWithJWT.model.entity.FilterEntity;
 import com.example.autorepairsWithJWT.model.entity.RimEntity;
 import com.example.autorepairsWithJWT.service.FilterService;
@@ -15,26 +18,30 @@ import java.util.Optional;
 @RestController
 public class FilterController {
     private final FilterService filterService;
+    private final StructMapper filterMapper;
 
-    public FilterController(FilterService filterService) {
+    public FilterController(FilterService filterService, StructMapper filterMapper) {
         this.filterService = filterService;
+        this.filterMapper = filterMapper;
     }
 
     //calling GET on http://localhost:8000/spareparts/filters/2
     @GetMapping("/spareparts/filters/{filterId}")
-    public ResponseEntity<FilterEntity> getOneFilter(@PathVariable Long filterId) {
+    public ResponseEntity<FilterResponse> getOneFilter(@PathVariable Long filterId) {
         Optional<FilterEntity> filterEntityOpt = this.filterService.findFilterById(filterId);
-        return filterEntityOpt.isEmpty()
-                ? ResponseEntity.notFound().build()
-                :ResponseEntity.ok(filterEntityOpt.get());
+
+        return filterEntityOpt
+                .map(flt -> ResponseEntity.ok(filterMapper.filterEntityToFilterResponse(flt)))
+                .orElseThrow(() -> new NotFoundSparepart("Filter with id " + filterId + " not found"));
     }
 
 
     //calling GET on http://localhost:8000/spareparts/filters/all
     @GetMapping("/spareparts/filters/all")
-    public ResponseEntity<List<FilterEntity>> getAllFilters() {
-        List<FilterEntity> allFilterEntitities = this.filterService.findAllFilters();
-        return ResponseEntity.ok(allFilterEntitities);
+    public ResponseEntity<List<FilterResponse>> getAllFilters() {
+        return ResponseEntity.ok(this.filterService.findAllFilters().stream()
+                .map(flt -> filterMapper.filterEntityToFilterResponse(flt))
+                .toList());
     }
 
 
@@ -45,11 +52,9 @@ public class FilterController {
 //        "modification":"4.2 FSI quattro"
 //    }
     @PostMapping("/spareparts/filters")
-    public ResponseEntity<RimEntity> createRim(
-            @RequestBody FilterCreateModifyRequest filterCreateModifyRequest,   //десериализация на body-то до Java обект – пропъртитата на боди-то на нашата заявка ще бъдат популирани върху нашето DTO
-            UriComponentsBuilder builder) {
+    public ResponseEntity<RimEntity> createFilter(@RequestBody FilterRequest filterRequest, UriComponentsBuilder builder) {
 
-        Long rimId = filterService.addNewFilter(filterCreateModifyRequest);
+        Long rimId = filterService.addNewFilter(filterRequest);
         URI location = builder.path("/spareparts/filters/{id}")
                 .buildAndExpand(rimId)
                 .toUri();
@@ -66,10 +71,10 @@ public class FilterController {
     @PutMapping("/spareparts/edit/filters/{filterId}")
     public ResponseEntity<FilterEntity> ModifyFilter(
             @PathVariable("filterId") Long filterId,
-            @RequestBody FilterCreateModifyRequest filterCreateModifyRequest,   //десериализация на body-то до Java обект – пропъртитата на боди-то на нашата заявка ще бъдат популирани върху нашето DTO
+            @RequestBody FilterRequest filterRequest,
             UriComponentsBuilder builder) {
 
-        Long isFilterModified = filterService.modifyExistingFilter(filterId, filterCreateModifyRequest);
+        Long isFilterModified = filterService.modifyExistingFilter(filterId, filterRequest);
 
         URI location = builder.path("/spareparts/filters/{id}")
                 .buildAndExpand(filterId)
