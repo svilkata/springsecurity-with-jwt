@@ -43,9 +43,7 @@ public class RimController {
     //        "inches": "15"
     //    }
     @PostMapping("/spareparts/rims")
-    public ResponseEntity<RimCreatedModifiedResponse> createRim(
-            @RequestBody RimCreateModifyRequest rimCreateModifyRequest,
-            UriComponentsBuilder builder) {
+    public ResponseEntity<RimCreatedModifiedResponse> createRim(@RequestBody RimCreateModifyRequest rimCreateModifyRequest, UriComponentsBuilder builder) {
 
         RimCreatedModifiedResponse rimCreatedModifiedResponse = rimService.addNewRim(rimCreateModifyRequest);
         URI location = builder.path("/spareparts/rims/{id}")
@@ -64,9 +62,7 @@ public class RimController {
     //    }
     @PutMapping("/spareparts/edit/rims/{rimId}")
     public ResponseEntity<RimCreatedModifiedResponse> ModifyRim(
-            @PathVariable("rimId") Long rimId,
-            @RequestBody RimCreateModifyRequest rimCreateModifyRequest,
-            UriComponentsBuilder builder) {
+            @PathVariable("rimId") Long rimId, @RequestBody RimCreateModifyRequest rimCreateModifyRequest, UriComponentsBuilder builder) {
 
         RimCreatedModifiedResponse rimCreatedModifiedResponse =
                 rimService.modifyExistingRim(rimId, rimCreateModifyRequest);
@@ -83,8 +79,7 @@ public class RimController {
     //calling DELETE on http://localhost:8000/spareparts/rims/4
     @DeleteMapping("/spareparts/rims/{rimId}")
     public ResponseEntity<RimEntity> deleteRimById(@PathVariable("rimId") Long rimId) {
-        this.rimService
-                .deleteRim(rimId);
+        this.rimService.deleteRim(rimId);
 
         return ResponseEntity.noContent().build();
     }

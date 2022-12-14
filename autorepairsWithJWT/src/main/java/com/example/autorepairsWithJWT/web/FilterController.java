@@ -28,6 +28,7 @@ public class FilterController {
     //calling GET on http://localhost:8000/spareparts/filters/2
     @GetMapping("/spareparts/filters/{filterId}")
     public ResponseEntity<FilterResponse> getOneFilter(@PathVariable Long filterId) {
+
         Optional<FilterEntity> filterEntityOpt = this.filterService.findFilterById(filterId);
 
         return filterEntityOpt
@@ -39,6 +40,7 @@ public class FilterController {
     //calling GET on http://localhost:8000/spareparts/filters/all
     @GetMapping("/spareparts/filters/all")
     public ResponseEntity<List<FilterResponse>> getAllFilters() {
+
         return ResponseEntity.ok(this.filterService.findAllFilters().stream()
                 .map(flt -> filterMapper.filterEntityToFilterResponse(flt))
                 .toList());
@@ -48,11 +50,11 @@ public class FilterController {
     //calling POST on http://localhost:8000/spareparts/filters
 //    {
 //        "brand":"AUDI",
-//        "model":"R8 (2007-)",
+//        "model":"R8 (2007)",
 //        "modification":"4.2 FSI quattro"
 //    }
     @PostMapping("/spareparts/filters")
-    public ResponseEntity<RimEntity> createFilter(@RequestBody FilterRequest filterRequest, UriComponentsBuilder builder) {
+    public ResponseEntity<?> createFilter(@RequestBody FilterRequest filterRequest, UriComponentsBuilder builder) {
 
         Long rimId = filterService.addNewFilter(filterRequest);
         URI location = builder.path("/spareparts/filters/{id}")
@@ -65,29 +67,27 @@ public class FilterController {
     //calling PUT on http://localhost:8000/spareparts/edit/filters/4
 //    {
 //        "brand":"AUDI",
-//        "model":"R8 (2007-)",
+//        "model":"R8 (2007RRR)",
 //        "modification":"5.2 FSI quattro"
 //    }
     @PutMapping("/spareparts/edit/filters/{filterId}")
-    public ResponseEntity<FilterEntity> ModifyFilter(
-            @PathVariable("filterId") Long filterId,
-            @RequestBody FilterRequest filterRequest,
-            UriComponentsBuilder builder) {
+    public ResponseEntity<?> ModifyFilter(
+            @PathVariable("filterId") Long filterId, @RequestBody FilterRequest filterRequest, UriComponentsBuilder builder) {
 
-        Long isFilterModified = filterService.modifyExistingFilter(filterId, filterRequest);
+        filterService.modifyExistingFilter(filterId, filterRequest);
 
         URI location = builder.path("/spareparts/filters/{id}")
                 .buildAndExpand(filterId)
                 .toUri();
 
-        return ResponseEntity.created(location).build();
+        return ResponseEntity.ok().location(location).build();
     }
 
     //calling DELETE on http://localhost:8000/spareparts/filters/4
     @DeleteMapping("/spareparts/filters/{filterId}")
     public ResponseEntity<FilterEntity> deleteFIlterById(@PathVariable Long filterId) {
-        this.filterService
-                .deleteFilter(filterId);
+
+        this.filterService.deleteFilter(filterId);
 
         return ResponseEntity.noContent().build();
     }

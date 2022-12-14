@@ -1,5 +1,6 @@
 package com.example.autorepairsWithJWT.config.mapstruct;
 
+import com.example.autorepairsWithJWT.model.dto.sparepart.FilterRequest;
 import com.example.autorepairsWithJWT.model.dto.sparepart.FilterResponse;
 import com.example.autorepairsWithJWT.model.dto.sparepart.RimCreatedModifiedResponse;
 import com.example.autorepairsWithJWT.model.dto.sparepart.TyreCreatedModifiedResponse;
@@ -17,7 +18,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2022-12-14T12:57:29+0200",
+    date = "2022-12-14T14:23:34+0200",
     comments = "version: 1.5.3.Final, compiler: javac, environment: Java 17.0.4.1 (Oracle Corporation)"
 )
 @Component
@@ -42,19 +43,34 @@ public class StructMapperImpl extends StructMapper {
     }
 
     @Override
-    public FilterResponse filterEntityToFilterResponse(FilterEntity flt) {
-        if ( flt == null ) {
+    public FilterResponse filterEntityToFilterResponse(FilterEntity filterEntity) {
+        if ( filterEntity == null ) {
             return null;
         }
 
         FilterResponse filterResponse = new FilterResponse();
 
-        filterResponse.setId( flt.getId() );
-        filterResponse.setBrand( flt.getBrand() );
-        filterResponse.setModel( flt.getModel() );
-        filterResponse.setModification( flt.getModification() );
+        filterResponse.setId( filterEntity.getId() );
+        filterResponse.setBrand( filterEntity.getBrand() );
+        filterResponse.setModel( filterEntity.getModel() );
+        filterResponse.setModification( filterEntity.getModification() );
 
         return filterResponse;
+    }
+
+    @Override
+    public FilterEntity filterRequestToFilterEntity(FilterRequest filterRequest) {
+        if ( filterRequest == null ) {
+            return null;
+        }
+
+        FilterEntity filterEntity = new FilterEntity();
+
+        filterEntity.setBrand( filterRequest.getBrand() );
+        filterEntity.setModel( filterRequest.getModel() );
+        filterEntity.setModification( filterRequest.getModification() );
+
+        return filterEntity;
     }
 
     @Override

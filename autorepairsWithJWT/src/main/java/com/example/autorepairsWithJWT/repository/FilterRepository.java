@@ -8,5 +8,5 @@ import java.util.Optional;
 
 @Repository
 public interface FilterRepository extends JpaRepository<FilterEntity, Long> {
-    Optional<FilterEntity> findByBrandAndModelAndModification();
+    Optional<FilterEntity> findByBrandAndModelAndModification(String brand, String model, String modification);
 }

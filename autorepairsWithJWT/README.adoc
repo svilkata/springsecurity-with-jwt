@@ -13,15 +13,18 @@
 * The database comes with initially generated data based on the OPEN-CLOSE principle
 * We save the data in MySQL database using Spring Data and Hibernate
 * We use a bean exposing the Pbkdf2PasswordEncoder() PasswordEncoder - so passwords are saved in the database encoded
-* MapStruct and ModelMapper are used in the project
+* MapStruct and ModelMapper are used in the project. Only one Mapstruct instance is used for several spareparts and the user - when bigger project, separate mapstruct instance for each type of entity is the preferable way of implementing
 * A `SecurityConfigNewSpring.java` class in `config` package- implementation of the new Spring Security configuration way
 * In order to start testing the project on POSTMAN, you might better look also the documentation of the other project https://github.com/svilkata/springsecurity-with-jwt/tree/master/JWT-SimpleDemo[JWT-SimpleDemo] -
 a bearer JWT token should be added as an Authorization header for all authenticated https requests.
 * Sample request info (endpoint and body) are given in comments above each controller in the code of the `web` folder.
-* We return a response to any endpoint only with body DTO  or with simple message or with error message (i.e. working on the web controller layer only with DTOs), and working on the service layer with entities.
+* We return a response to any endpoint - with body DTO, empty body, with simple message or with error message
+* Working on the web controller layer mainly with DTOs, and working on the service layer with entities.
+* Exception handling is invoked either on the service layer or on the web controller layer
 * We process the exceptions with the @ControllerAdvice approach
 
-// TODO: check TODOs
+// TODO: FilterController done 100%, RimController/Service with Mapstruct only, TyreController to make it only with ModelMapper all
+// check TODOs
 // struct map - to clear the long names
 // check exceptions (@ControllerAdvice)
 // replace/use in the end  the updated config security chain NewSpring

@@ -2,7 +2,7 @@ package com.example.autorepairsWithJWT.service;
 
 import com.example.autorepairsWithJWT.config.mapstruct.StructMapper;
 import com.example.autorepairsWithJWT.exception.NotFoundUserException;
-import com.example.autorepairsWithJWT.exception.NotFoundUsernameEmailException;
+import com.example.autorepairsWithJWT.exception.ConflictUsernameEmailException;
 import com.example.autorepairsWithJWT.init.InitializableService;
 import com.example.autorepairsWithJWT.model.dto.userregister.UserDtoResponse;
 import com.example.autorepairsWithJWT.model.dto.userregister.UserRegisterRequest;
@@ -90,11 +90,11 @@ public class UserService implements InitializableService {
 
     public UserEntity registerNewUser(UserRegisterRequest userRegisterRequest) {
         if (userRepository.existsUserEntityByUsername(userRegisterRequest.getUsername())) {
-            throw new NotFoundUsernameEmailException("Username %s is already occupied!".formatted(userRegisterRequest.getUsername()));
+            throw new ConflictUsernameEmailException("Username %s is already occupied!".formatted(userRegisterRequest.getUsername()));
         }
 
         if (userRepository.existsUserEntityByEmail(userRegisterRequest.getEmail())) {
-            throw new NotFoundUsernameEmailException("Email %s is already occupied!".formatted(userRegisterRequest.getEmail()));
+            throw new ConflictUsernameEmailException("Email %s is already occupied!".formatted(userRegisterRequest.getEmail()));
         }
 
         List<UserRoleEntity> userRoleEntities = new ArrayList<>();

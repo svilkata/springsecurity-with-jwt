@@ -1,5 +1,7 @@
 package com.example.autorepairsWithJWT.service;
 
+import com.example.autorepairsWithJWT.config.mapstruct.StructMapper;
+import com.example.autorepairsWithJWT.exception.ConflictSparepartException;
 import com.example.autorepairsWithJWT.exception.NotFoundSparepart;
 import com.example.autorepairsWithJWT.init.InitializableService;
 import com.example.autorepairsWithJWT.model.dto.sparepart.FilterRequest;
@@ -13,9 +15,11 @@ import java.util.Optional;
 @Service
 public class FilterService implements InitializableService {
     private final FilterRepository filterRepository;
+    private final StructMapper filterMapper;
 
-    public FilterService(FilterRepository filterRepository) {
+    public FilterService(FilterRepository filterRepository, StructMapper filterMapper) {
         this.filterRepository = filterRepository;
+        this.filterMapper = filterMapper;
     }
 
     @Override
@@ -44,46 +48,36 @@ public class FilterService implements InitializableService {
         return this.filterRepository.findAll();
     }
 
-    //TODO: finish exception handling
     public Long addNewFilter(FilterRequest filterRequest) {
-        Optional<FilterEntity> filterEntityExists = this.filterRepository.findByBrandAndModelAndModification();
+        Optional<FilterEntity> filterEntityOpt = this.filterRepository.findByBrandAndModelAndModification(
+                filterRequest.getBrand(), filterRequest.getModel(), filterRequest.getModification());
 
-        //TODO: mapstruct here to use
-        filterEntityExists
-                .map(flt -> new FilterEntity()
-                        .setBrand(filterRequest.getBrand())
-                        .setModel(filterRequest.getModel())
-                        .setModification(filterRequest.getModification()))
-                .orElseThrow(() -> new CONFLICT exception)
-
-        FilterEntity newFilterToAdd =
-
-
-        return this.filterRepository.save(newFilterToAdd).getId();
-    }
-
-    public Long modifyExistingFilter(Long filterId, FilterRequest filterRequest) {
-        Optional<FilterEntity> filterOpt = this.filterRepository.findById(filterId);
-        if (filterOpt.isEmpty()) {
-            throw new NotFoundSparepart("You are trying to update a non-existing item");
+        if (filterEntityOpt.isPresent()) {
+            throw new ConflictSparepartException(String.format("Filter brand: %s, model: %s, modification: %s already exists",
+                    filterRequest.getBrand(), filterRequest.getModel(), filterRequest.getModification()));
         }
 
-        FilterEntity filterToModify = filterOpt.get()
-                .setBrand(filterRequest.getBrand())
-                .setModel(filterRequest.getModel())
-                .setModification(filterRequest.getModification());
+        return this.filterRepository.save(filterMapper.filterRequestToFilterEntity(filterRequest)).getId();
+    }
 
-        FilterEntity savedInDB = filterRepository.save(filterToModify);
+    public void modifyExistingFilter(Long filterId, FilterRequest filterRequest) {
+        Optional<FilterEntity> filterEntityOpt = this.filterRepository.findById(filterId);
 
-        return savedInDB.getId();
+        filterEntityOpt
+                .map(flt -> {
+                    if (flt.equalsToRequest(filterRequest)){
+                        throw new ConflictSparepartException(String.format("Filter sparepart with id %d not modified - no changes detected", filterId));
+                    }
+                    return filterRepository.save(filterMapper.filterRequestToFilterEntity(filterRequest).setId(filterId));
+                })
+                .orElseThrow(() -> new NotFoundSparepart("Filter with %d is not found and can not be modified".formatted(filterId)));
     }
 
     public void deleteFilter(Long filterId) {
         try {
             filterRepository.deleteById(filterId);
         } catch (Exception ex) {
-            throw new NotFoundSparepart("You are trying to delete a non-existing sparepart");
+            throw new NotFoundSparepart("Filter with %d is not found and can not be deleted".formatted(filterId));
         }
-
     }
 }
