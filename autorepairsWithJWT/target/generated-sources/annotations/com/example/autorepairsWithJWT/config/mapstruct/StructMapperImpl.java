@@ -2,13 +2,12 @@ package com.example.autorepairsWithJWT.config.mapstruct;
 
 import com.example.autorepairsWithJWT.model.dto.sparepart.FilterRequest;
 import com.example.autorepairsWithJWT.model.dto.sparepart.FilterResponse;
-import com.example.autorepairsWithJWT.model.dto.sparepart.RimCreatedModifiedResponse;
-import com.example.autorepairsWithJWT.model.dto.sparepart.TyreCreatedModifiedResponse;
+import com.example.autorepairsWithJWT.model.dto.sparepart.RimRequest;
+import com.example.autorepairsWithJWT.model.dto.sparepart.RimResponse;
 import com.example.autorepairsWithJWT.model.dto.userregister.UserDtoResponse;
 import com.example.autorepairsWithJWT.model.dto.userregister.UserRoleObject;
 import com.example.autorepairsWithJWT.model.entity.FilterEntity;
 import com.example.autorepairsWithJWT.model.entity.RimEntity;
-import com.example.autorepairsWithJWT.model.entity.TyreEntity;
 import com.example.autorepairsWithJWT.model.entity.UserEntity;
 import com.example.autorepairsWithJWT.model.entity.UserRoleEntity;
 import java.util.ArrayList;
@@ -18,7 +17,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2022-12-14T14:23:34+0200",
+    date = "2022-12-15T10:06:03+0200",
     comments = "version: 1.5.3.Final, compiler: javac, environment: Java 17.0.4.1 (Oracle Corporation)"
 )
 @Component
@@ -74,39 +73,32 @@ public class StructMapperImpl extends StructMapper {
     }
 
     @Override
-    public RimCreatedModifiedResponse rimEntityToRimCreatedModifiedResponseJsonDTO(RimEntity rimEntity) {
-        if ( rimEntity == null ) {
+    public RimResponse rimEntityToRimResponse(RimEntity flt) {
+        if ( flt == null ) {
             return null;
         }
 
-        RimCreatedModifiedResponse rimCreatedModifiedResponse = new RimCreatedModifiedResponse();
+        RimResponse rimResponse = new RimResponse();
 
-        rimCreatedModifiedResponse.setId( rimEntity.getId() );
-        rimCreatedModifiedResponse.setMetalKind( rimEntity.getMetalKind() );
-        rimCreatedModifiedResponse.setInches( rimEntity.getInches() );
+        rimResponse.setId( flt.getId() );
+        rimResponse.setMetalKind( flt.getMetalKind() );
+        rimResponse.setInches( flt.getInches() );
 
-        return rimCreatedModifiedResponse;
+        return rimResponse;
     }
 
     @Override
-    public TyreCreatedModifiedResponse tyreEntityToTyreCreatedModifiedResponseJsonDTO(TyreEntity tyreEntity) {
-        if ( tyreEntity == null ) {
+    public RimEntity rimRequestToRimEntity(RimRequest rimRequest) {
+        if ( rimRequest == null ) {
             return null;
         }
 
-        TyreCreatedModifiedResponse tyreCreatedModifiedResponse = new TyreCreatedModifiedResponse();
+        RimEntity rimEntity = new RimEntity();
 
-        tyreCreatedModifiedResponse.setId( tyreEntity.getId() );
-        if ( tyreEntity.getTyreKind() != null ) {
-            tyreCreatedModifiedResponse.setTyreKind( tyreEntity.getTyreKind().name() );
-        }
-        tyreCreatedModifiedResponse.setBrand( tyreEntity.getBrand() );
-        tyreCreatedModifiedResponse.setWidth( tyreEntity.getWidth() );
-        tyreCreatedModifiedResponse.setHeight( tyreEntity.getHeight() );
-        tyreCreatedModifiedResponse.setInches( tyreEntity.getInches() );
-        tyreCreatedModifiedResponse.setFlat( tyreEntity.getFlat() );
+        rimEntity.setMetalKind( rimRequest.getMetalKind() );
+        rimEntity.setInches( rimRequest.getInches() );
 
-        return tyreCreatedModifiedResponse;
+        return rimEntity;
     }
 
     protected UserRoleObject userRoleEntityToUserRoleObject(UserRoleEntity userRoleEntity) {

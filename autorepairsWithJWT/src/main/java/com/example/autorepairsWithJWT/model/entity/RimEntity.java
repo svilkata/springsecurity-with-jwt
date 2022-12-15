@@ -1,5 +1,7 @@
 package com.example.autorepairsWithJWT.model.entity;
 
+import com.example.autorepairsWithJWT.model.dto.sparepart.RimRequest;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -17,7 +19,7 @@ public class RimEntity extends BaseEntity{
     }
 
     public String getMetalKind() {
-        return metalKind;
+        return this.metalKind;
     }
 
     public RimEntity setMetalKind(String metalKind) {
@@ -26,11 +28,21 @@ public class RimEntity extends BaseEntity{
     }
 
     public String getInches() {
-        return inches;
+        return this.inches;
     }
 
     public RimEntity setInches(String inches) {
         this.inches = inches;
         return this;
+    }
+
+    @Override
+    public RimEntity setId(Long id) {
+        super.setId(id);
+        return this;
+    }
+
+    public boolean equalsToRequest(RimRequest rimRequest) {
+        return rimRequest.getMetalKind().equals(this.metalKind) && rimRequest.getInches().equals(this.inches);
     }
 }

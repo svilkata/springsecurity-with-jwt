@@ -1,5 +1,7 @@
 package com.example.autorepairsWithJWT.model.entity;
 
+import com.example.autorepairsWithJWT.model.dto.sparepart.FilterRequest;
+import com.example.autorepairsWithJWT.model.dto.sparepart.TyreRequest;
 import com.example.autorepairsWithJWT.model.enums.TyreKindEnum;
 
 import javax.persistence.*;
@@ -76,5 +78,17 @@ public class TyreEntity extends BaseEntity {
     public TyreEntity setFlat(String flat) {
         this.flat = flat;
         return this;
+    }
+
+    @Override
+    public TyreEntity setId(Long id) {
+        super.setId(id);
+        return this;
+    }
+
+    public boolean equalsToRequest(TyreRequest tyreRequest) {
+        return tyreRequest.getTyreKind().equals(this.tyreKind.name()) && tyreRequest.getBrand().equals(this.brand)
+                && tyreRequest.getWidth().equals(this.width) && tyreRequest.getHeight().equals(this.height)
+                && tyreRequest.getInches().equals(this.inches) && tyreRequest.getFlat().equals(this.flat);
     }
 }

@@ -3,19 +3,19 @@ package com.example.autorepairsWithJWT.model.dto.sparepart;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class RimCreatedModifiedResponse {
+public class RimResponse {
     private Long id;
     private String metalKind;
     private String inches;
 
-    public RimCreatedModifiedResponse() {
+    public RimResponse() {
     }
 
     public Long getId() {
         return id;
     }
 
-    public RimCreatedModifiedResponse setId(Long id) {
+    public RimResponse setId(Long id) {
         this.id = id;
         return this;
     }
@@ -24,7 +24,7 @@ public class RimCreatedModifiedResponse {
         return metalKind;
     }
 
-    public RimCreatedModifiedResponse setMetalKind(String metalKind) {
+    public RimResponse setMetalKind(String metalKind) {
         this.metalKind = metalKind;
         return this;
     }
@@ -33,7 +33,7 @@ public class RimCreatedModifiedResponse {
         return inches;
     }
 
-    public RimCreatedModifiedResponse setInches(String inches) {
+    public RimResponse setInches(String inches) {
         this.inches = inches;
         return this;
     }

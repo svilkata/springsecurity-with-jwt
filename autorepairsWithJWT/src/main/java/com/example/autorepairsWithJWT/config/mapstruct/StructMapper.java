@@ -1,9 +1,6 @@
 package com.example.autorepairsWithJWT.config.mapstruct;
 
-import com.example.autorepairsWithJWT.model.dto.sparepart.FilterRequest;
-import com.example.autorepairsWithJWT.model.dto.sparepart.FilterResponse;
-import com.example.autorepairsWithJWT.model.dto.sparepart.RimCreatedModifiedResponse;
-import com.example.autorepairsWithJWT.model.dto.sparepart.TyreCreatedModifiedResponse;
+import com.example.autorepairsWithJWT.model.dto.sparepart.*;
 import com.example.autorepairsWithJWT.model.dto.userregister.UserDtoResponse;
 import com.example.autorepairsWithJWT.model.entity.FilterEntity;
 import com.example.autorepairsWithJWT.model.entity.RimEntity;
@@ -28,12 +25,8 @@ public abstract class StructMapper {
 
     public abstract FilterEntity filterRequestToFilterEntity(FilterRequest filterRequest);
 
-    @Mapping(target = "id", source = "id")
-    public abstract RimCreatedModifiedResponse rimEntityToRimCreatedModifiedResponseJsonDTO(RimEntity rimEntity);
+    public abstract RimResponse rimEntityToRimResponse(RimEntity flt);
 
-    @Mapping(target = "id", source = "id")
-    public abstract TyreCreatedModifiedResponse tyreEntityToTyreCreatedModifiedResponseJsonDTO(TyreEntity tyreEntity);
-
-
+    public abstract RimEntity rimRequestToRimEntity(RimRequest rimRequest);
 }
 

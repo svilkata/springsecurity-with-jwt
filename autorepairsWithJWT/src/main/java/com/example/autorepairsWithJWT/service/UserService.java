@@ -25,14 +25,14 @@ public class UserService implements InitializableService {
     private final UserRepository userRepository;
     private final UserRoleRepository userRoleRepository;
     private final PasswordEncoder passwordEncoder;
-    private final StructMapper structMapper;
+    private final StructMapper userMapper;
 
     public UserService(UserRepository userRepository, UserRoleRepository userRoleRepository,
-                       PasswordEncoder passwordEncoder, StructMapper structMapper) {
+                       PasswordEncoder passwordEncoder, StructMapper userMapper) {
         this.userRepository = userRepository;
         this.userRoleRepository = userRoleRepository;
         this.passwordEncoder = passwordEncoder;
-        this.structMapper = structMapper;
+        this.userMapper = userMapper;
     }
 
     @Override
@@ -103,9 +103,9 @@ public class UserService implements InitializableService {
             UserRoleEntity userRoleEntityCurr = null;
             String userRole = userRoleObject.getUserRole();
             switch (userRole) {
-                case "ADMIN" -> userRoleEntityCurr = this.userRoleRepository.findById(1L).get();
-                case "MODERATOR" -> userRoleEntityCurr = this.userRoleRepository.findById(2L).get();
-                case "USER" -> userRoleEntityCurr = this.userRoleRepository.findById(3L).get();
+                case "ADMIN" -> userRoleEntityCurr = userRoleRepository.findById(1L).get();
+                case "MODERATOR" -> userRoleEntityCurr = userRoleRepository.findById(2L).get();
+                case "USER" -> userRoleEntityCurr = userRoleRepository.findById(3L).get();
             }
 
             userRoleEntities.add(userRoleEntityCurr);
@@ -124,35 +124,31 @@ public class UserService implements InitializableService {
     }
 
     public UserDtoResponse findUserById(Long userId) {
-        Optional<UserEntity> userEntityOpt = this.userRepository.findById(userId);
+        Optional<UserEntity> userEntityOpt = userRepository.findById(userId);
 
         return
                 userEntityOpt
-                        .map(usr -> structMapper.userEntityToUserDtoResponse(usr))
+                        .map(usr -> userMapper.userEntityToUserDtoResponse(usr))
                         .orElseThrow(() -> new NotFoundUserException("User with id " + userId + " not found"));
     }
 
     public List<UserDtoResponse> findAllUsers() {
-        List<UserEntity> all = this.userRepository.findAll();
+        List<UserEntity> all = userRepository.findAll();
 
         return all.stream()
-                .map(usr -> structMapper.userEntityToUserDtoResponse(usr))
+                .map(usr -> userMapper.userEntityToUserDtoResponse(usr))
                 .collect(Collectors.toList());
     }
 
     public Optional<UserEntity> findUserByUsernameAndPassword(String username, String password) {
-        return this.userRepository.findByUsernameAndPassword(username, password);
+        return userRepository.findByUsernameAndPassword(username, password);
     }
 
     public void deleteUserById(Long userId) {
         try {
-            this.userRepository.deleteById(userId);
+            userRepository.deleteById(userId);
         } catch (RuntimeException e){
             throw new NotFoundUserException("Cannot delete user with id %d as such user does not exists".formatted(userId));
         }
     }
-
-//    public Optional<UserEntity> findUserByUsername(String username) {
-//        return this.userRepository.findByUsername(username);
-//    }
 }

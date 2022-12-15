@@ -1,6 +1,6 @@
 package com.example.autorepairsWithJWT.init;
 
-import com.example.autorepairsWithJWT.model.dto.sparepart.RimCreateModifyRequest;
+import com.example.autorepairsWithJWT.model.dto.sparepart.RimRequest;
 import com.example.autorepairsWithJWT.model.entity.RimEntity;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.http.HttpEntity;
@@ -37,19 +37,19 @@ public class AppInit implements CommandLineRunner {
     }
 
     private void getAllRims() {
-        ResponseEntity<RimCreateModifyRequest[]> allRimsResponse = restWebClient
-                .getForEntity("http://localhost:8000/spareparts/rims/all", RimCreateModifyRequest[].class);
+        ResponseEntity<RimRequest[]> allRimsResponse = restWebClient
+                .getForEntity("http://localhost:8000/spareparts/rims/all", RimRequest[].class);
 
         if (allRimsResponse.hasBody()) {
-            for (RimCreateModifyRequest rim : allRimsResponse.getBody()) {
+            for (RimRequest rim : allRimsResponse.getBody()) {
                 System.out.println("Rim: " + rim);
             }
         }
     }
 
     private void getOneRim() {
-        ResponseEntity<RimCreateModifyRequest> oneRimResponse = restWebClient
-                .getForEntity("http://localhost:8000/spareparts/rims/1", RimCreateModifyRequest.class);
+        ResponseEntity<RimRequest> oneRimResponse = restWebClient
+                .getForEntity("http://localhost:8000/spareparts/rims/1", RimRequest.class);
         if (oneRimResponse.hasBody()) {
             System.out.println("Rim: " + oneRimResponse.getBody());
         }
@@ -68,8 +68,8 @@ public class AppInit implements CommandLineRunner {
 //        map.add("metalKind", "bronze");
 //        map.add("inches", "15");
 
-        RimCreateModifyRequest newRimJsonToAdd =
-                new RimCreateModifyRequest()
+        RimRequest newRimJsonToAdd =
+                new RimRequest()
                         .setMetalKind("bronze")
                         .setInches("15");
 

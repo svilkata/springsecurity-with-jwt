@@ -1,10 +1,12 @@
 package com.example.autorepairsWithJWT.service;
 
 import com.example.autorepairsWithJWT.config.mapstruct.StructMapper;
+import com.example.autorepairsWithJWT.exception.ConflictSparepartException;
 import com.example.autorepairsWithJWT.exception.NotFoundSparepart;
 import com.example.autorepairsWithJWT.init.InitializableService;
-import com.example.autorepairsWithJWT.model.dto.sparepart.TyreCreateModifyRequest;
-import com.example.autorepairsWithJWT.model.dto.sparepart.TyreCreatedModifiedResponse;
+import com.example.autorepairsWithJWT.model.dto.sparepart.TyreRequest;
+import com.example.autorepairsWithJWT.model.dto.sparepart.TyreResponse;
+import com.example.autorepairsWithJWT.model.entity.FilterEntity;
 import com.example.autorepairsWithJWT.model.entity.TyreEntity;
 import com.example.autorepairsWithJWT.model.enums.TyreKindEnum;
 import com.example.autorepairsWithJWT.repository.TyreRepository;
@@ -17,13 +19,11 @@ import java.util.Optional;
 @Service
 public class TyreService implements InitializableService {
     private final TyreRepository tyreRepository;
-    private final ModelMapper modelMapper;
-    private final StructMapper structMapper;
+    private final ModelMapper tyreMapper;
 
-    public TyreService(TyreRepository tyreRepository, ModelMapper modelMapper, StructMapper structMapper) {
+    public TyreService(TyreRepository tyreRepository, ModelMapper tyreMapper) {
         this.tyreRepository = tyreRepository;
-        this.modelMapper = modelMapper;
-        this.structMapper = structMapper;
+        this.tyreMapper = tyreMapper;
     }
 
     @Override
@@ -46,49 +46,50 @@ public class TyreService implements InitializableService {
                 .setInches(inches)
                 .setFlat(isFlat);
 
-        this.tyreRepository.save(tyreEntity);
+        tyreRepository.save(tyreEntity);
     }
 
     public Optional<TyreEntity> findTyreById(Long tyreId) {
-        return this.tyreRepository.findById(tyreId);
+        return tyreRepository.findById(tyreId);
     }
 
     public List<TyreEntity> findAllTyres() {
-        return this.tyreRepository.findAll();
+        return tyreRepository.findAll();
     }
 
-    //TODO: make it here only with modelMapper???
-    public TyreCreatedModifiedResponse addNewTyre(TyreCreateModifyRequest tyreCreateModifyRequest) {
-        TyreEntity newTyreToAdd = this.modelMapper.map(tyreCreateModifyRequest, TyreEntity.class);
+    public Long addNewTyre(TyreRequest tyreRequest) {
+        Optional<TyreEntity> tyreEntityOpt = tyreRepository.findByTyreKindAndBrandAndWidthAndHeightAndInchesAndFlat(
+                TyreKindEnum.valueOf(tyreRequest.getTyreKind()), tyreRequest.getBrand(), tyreRequest.getWidth(), tyreRequest.getHeight(),
+                tyreRequest.getInches(), tyreRequest.getFlat());
 
-        TyreEntity savedInDB = tyreRepository.save(newTyreToAdd);
-        TyreCreatedModifiedResponse tyreCreatedModifiedResponse =
-                this.structMapper.tyreEntityToTyreCreatedModifiedResponseJsonDTO(savedInDB);
-
-        return tyreCreatedModifiedResponse;
-    }
-
-    public TyreCreatedModifiedResponse modifyExistingTyre(Long tyreId, TyreCreateModifyRequest tyreCreateModifyRequest) {
-        Optional<TyreEntity> tyreOpt = this.tyreRepository.findById(tyreId);
-        if (tyreOpt.isEmpty()) {
-            throw new NotFoundSparepart("You are trying to update a non-existing item");
+        if (tyreEntityOpt.isPresent()) {
+            throw new ConflictSparepartException(String.format("Tyre kind: %s, brand: %s, width: %s, height: %s, inches: %s, flat: %s not saved - it already exists",
+                    tyreRequest.getTyreKind(), tyreRequest.getBrand(), tyreRequest.getWidth(), tyreRequest.getHeight(),
+                    tyreRequest.getInches(), tyreRequest.getFlat()
+                  ));
         }
 
-        TyreEntity tyreToModify = this.modelMapper.map(tyreCreateModifyRequest, TyreEntity.class);
-        tyreToModify.setId(tyreId);
+        return tyreRepository.save(tyreMapper.map(tyreRequest, TyreEntity.class)).getId();
+    }
 
-        TyreEntity savedInDB = tyreRepository.save(tyreToModify);
-        TyreCreatedModifiedResponse tyreCreatedModifiedResponse =
-                this.structMapper.tyreEntityToTyreCreatedModifiedResponseJsonDTO(savedInDB);
+    public void modifyExistingTyre(Long tyreId, TyreRequest tyreRequest) {
+        Optional<TyreEntity> tyreEntityOpt = tyreRepository.findById(tyreId);
 
-        return tyreCreatedModifiedResponse;
+        tyreEntityOpt
+                .map(tyre -> {
+                    if (tyre.equalsToRequest(tyreRequest)){
+                        throw new ConflictSparepartException(String.format("Tyre sparepart with id %d not modified - no changes detected", tyreId));
+                    }
+                    return tyreRepository.save(tyreMapper.map(tyreRequest, TyreEntity.class).setId(tyreId));
+                })
+                .orElseThrow(() -> new NotFoundSparepart("Tyre with %d is not found and can not be modified".formatted(tyreId)));
     }
 
     public void deleteTyreById(Long tyreId) {
         try {
-            this.tyreRepository.deleteById(tyreId);
-        } catch (Exception ex){
-            throw new NotFoundSparepart("You are trying to delete a non-existing item");
+            tyreRepository.deleteById(tyreId);
+        } catch (RuntimeException ex){
+            throw new NotFoundSparepart("Tyre with %d is not found and can not be deleted".formatted(tyreId));
         }
     }
 }

@@ -3,7 +3,8 @@ package com.example.autorepairsWithJWT.model.dto.sparepart;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class TyreCreateModifyRequest {
+public class TyreResponse {
+    private Long id;
     private String tyreKind;
     private String brand;
     private String width;
@@ -11,14 +12,14 @@ public class TyreCreateModifyRequest {
     private String inches;
     private String flat;
 
-    public TyreCreateModifyRequest() {
+    public TyreResponse() {
     }
 
     public String getTyreKind() {
         return tyreKind;
     }
 
-    public TyreCreateModifyRequest setTyreKind(String tyreKind) {
+    public TyreResponse setTyreKind(String tyreKind) {
         this.tyreKind = tyreKind;
         return this;
     }
@@ -27,7 +28,7 @@ public class TyreCreateModifyRequest {
         return brand;
     }
 
-    public TyreCreateModifyRequest setBrand(String brand) {
+    public TyreResponse setBrand(String brand) {
         this.brand = brand;
         return this;
     }
@@ -36,7 +37,7 @@ public class TyreCreateModifyRequest {
         return width;
     }
 
-    public TyreCreateModifyRequest setWidth(String width) {
+    public TyreResponse setWidth(String width) {
         this.width = width;
         return this;
     }
@@ -45,7 +46,7 @@ public class TyreCreateModifyRequest {
         return height;
     }
 
-    public TyreCreateModifyRequest setHeight(String height) {
+    public TyreResponse setHeight(String height) {
         this.height = height;
         return this;
     }
@@ -54,7 +55,7 @@ public class TyreCreateModifyRequest {
         return inches;
     }
 
-    public TyreCreateModifyRequest setInches(String inches) {
+    public TyreResponse setInches(String inches) {
         this.inches = inches;
         return this;
     }
@@ -63,8 +64,17 @@ public class TyreCreateModifyRequest {
         return flat;
     }
 
-    public TyreCreateModifyRequest setFlat(String flat) {
+    public TyreResponse setFlat(String flat) {
         this.flat = flat;
+        return this;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public TyreResponse setId(Long id) {
+        this.id = id;
         return this;
     }
 }

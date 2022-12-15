@@ -5,7 +5,6 @@ import com.example.autorepairsWithJWT.exception.NotFoundSparepart;
 import com.example.autorepairsWithJWT.model.dto.sparepart.FilterRequest;
 import com.example.autorepairsWithJWT.model.dto.sparepart.FilterResponse;
 import com.example.autorepairsWithJWT.model.entity.FilterEntity;
-import com.example.autorepairsWithJWT.model.entity.RimEntity;
 import com.example.autorepairsWithJWT.service.FilterService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -32,7 +31,7 @@ public class FilterController {
         Optional<FilterEntity> filterEntityOpt = this.filterService.findFilterById(filterId);
 
         return filterEntityOpt
-                .map(flt -> ResponseEntity.ok(filterMapper.filterEntityToFilterResponse(flt)))
+                .map(flt -> ResponseEntity.ok(this.filterMapper.filterEntityToFilterResponse(flt)))
                 .orElseThrow(() -> new NotFoundSparepart("Filter with id " + filterId + " not found"));
     }
 
@@ -42,7 +41,7 @@ public class FilterController {
     public ResponseEntity<List<FilterResponse>> getAllFilters() {
 
         return ResponseEntity.ok(this.filterService.findAllFilters().stream()
-                .map(flt -> filterMapper.filterEntityToFilterResponse(flt))
+                .map(flt -> this.filterMapper.filterEntityToFilterResponse(flt))
                 .toList());
     }
 
@@ -56,9 +55,9 @@ public class FilterController {
     @PostMapping("/spareparts/filters")
     public ResponseEntity<?> createFilter(@RequestBody FilterRequest filterRequest, UriComponentsBuilder builder) {
 
-        Long rimId = filterService.addNewFilter(filterRequest);
+        Long filterId = this.filterService.addNewFilter(filterRequest);
         URI location = builder.path("/spareparts/filters/{id}")
-                .buildAndExpand(rimId)
+                .buildAndExpand(filterId)
                 .toUri();
 
         return ResponseEntity.created(location).build();
@@ -74,7 +73,7 @@ public class FilterController {
     public ResponseEntity<?> ModifyFilter(
             @PathVariable("filterId") Long filterId, @RequestBody FilterRequest filterRequest, UriComponentsBuilder builder) {
 
-        filterService.modifyExistingFilter(filterId, filterRequest);
+        this.filterService.modifyExistingFilter(filterId, filterRequest);
 
         URI location = builder.path("/spareparts/filters/{id}")
                 .buildAndExpand(filterId)
@@ -85,7 +84,7 @@ public class FilterController {
 
     //calling DELETE on http://localhost:8000/spareparts/filters/4
     @DeleteMapping("/spareparts/filters/{filterId}")
-    public ResponseEntity<FilterEntity> deleteFIlterById(@PathVariable Long filterId) {
+    public ResponseEntity<?> deleteFIlterById(@PathVariable Long filterId) {
 
         this.filterService.deleteFilter(filterId);
 

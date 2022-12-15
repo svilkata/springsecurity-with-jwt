@@ -1,7 +1,6 @@
 package com.example.autorepairsWithJWT.web;
 
 import com.example.autorepairsWithJWT.model.dto.userregister.UserDtoResponse;
-import com.example.autorepairsWithJWT.model.entity.RimEntity;
 import com.example.autorepairsWithJWT.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;

@@ -18,15 +18,19 @@
 * In order to start testing the project on POSTMAN, you might better look also the documentation of the other project https://github.com/svilkata/springsecurity-with-jwt/tree/master/JWT-SimpleDemo[JWT-SimpleDemo] -
 a bearer JWT token should be added as an Authorization header for all authenticated https requests.
 * Sample request info (endpoint and body) are given in comments above each controller in the code of the `web` folder.
-* We return a response to any endpoint - with body DTO, empty body, with simple message or with error message
-* Working on the web controller layer mainly with DTOs, and working on the service layer with entities.
-* Exception handling is invoked either on the service layer or on the web controller layer
+* We return a response to endpoint - with body DTO, empty body, with simple message or with error message
+
+* Web layer / service layer
+    - Working on the web controller layer mainly with DTOs, and working on the service layer mainly with entities. We could also arrange the service layer to always return to the web layer only entities or only DTOs.
+    - Exception handling is invoked either on the service layer or on the web controller layer. We could arrange this to happen on only one layer
+    - We could also arrange the code in such a way that: exceptions are invoked only on the web layer / or only on the service layer
+
+
 * We process the exceptions with the @ControllerAdvice approach
 
-// TODO: FilterController done 100%, RimController/Service with Mapstruct only, TyreController to make it only with ModelMapper all
+// TODO:
 // check TODOs
-// struct map - to clear the long names
-// check exceptions (@ControllerAdvice)
 // replace/use in the end  the updated config security chain NewSpring
+// creteOneRimViaRestWebClientAuthorizedUser
 
 

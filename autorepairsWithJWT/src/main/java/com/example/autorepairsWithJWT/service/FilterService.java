@@ -41,23 +41,23 @@ public class FilterService implements InitializableService {
     }
 
     public Optional<FilterEntity> findFilterById(Long filterId) {
-        return this.filterRepository.findById(filterId);
+        return filterRepository.findById(filterId);
     }
 
     public List<FilterEntity> findAllFilters() {
-        return this.filterRepository.findAll();
+        return filterRepository.findAll();
     }
 
     public Long addNewFilter(FilterRequest filterRequest) {
-        Optional<FilterEntity> filterEntityOpt = this.filterRepository.findByBrandAndModelAndModification(
+        Optional<FilterEntity> filterEntityOpt = filterRepository.findByBrandAndModelAndModification(
                 filterRequest.getBrand(), filterRequest.getModel(), filterRequest.getModification());
 
         if (filterEntityOpt.isPresent()) {
-            throw new ConflictSparepartException(String.format("Filter brand: %s, model: %s, modification: %s already exists",
+            throw new ConflictSparepartException(String.format("Filter brand: %s, model: %s, modification: %s not saved - it already exists",
                     filterRequest.getBrand(), filterRequest.getModel(), filterRequest.getModification()));
         }
 
-        return this.filterRepository.save(filterMapper.filterRequestToFilterEntity(filterRequest)).getId();
+        return filterRepository.save(filterMapper.filterRequestToFilterEntity(filterRequest)).getId();
     }
 
     public void modifyExistingFilter(Long filterId, FilterRequest filterRequest) {
@@ -76,7 +76,7 @@ public class FilterService implements InitializableService {
     public void deleteFilter(Long filterId) {
         try {
             filterRepository.deleteById(filterId);
-        } catch (Exception ex) {
+        } catch (RuntimeException ex) {
             throw new NotFoundSparepart("Filter with %d is not found and can not be deleted".formatted(filterId));
         }
     }

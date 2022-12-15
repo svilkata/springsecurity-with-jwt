@@ -74,7 +74,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
                 // II) *Private endpoints*
                 //specific authorized endpoints only by user with admin role (/users/login and /users/register precede the below endpoints /users/**)
-                .antMatchers(HttpMethod.GET, "/users/**").hasRole(UserRoleEnum.ADMIN.name())
+                .antMatchers("/users/**").hasRole(UserRoleEnum.ADMIN.name()) //any http method (GET, DELETE in our case)
                 .antMatchers(HttpMethod.DELETE, "/spareparts/rims/{id}").hasRole(UserRoleEnum.ADMIN.name())
                 .antMatchers(HttpMethod.DELETE, "/spareparts/tyres/{id}").hasRole(UserRoleEnum.ADMIN.name())
                 .antMatchers(HttpMethod.DELETE, "/spareparts/filters/{id}").hasRole(UserRoleEnum.ADMIN.name())

@@ -8,5 +8,5 @@ import java.util.Optional;
 
 @Repository
 public interface RimRepository extends JpaRepository<RimEntity, Long> {
-    Optional<RimEntity> findByInchesAndMetalKind(String inches, String metalKind);
+    Optional<RimEntity> findByMetalKindAndInches(String metalKind, String inches);
 }

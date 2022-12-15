@@ -1,7 +1,10 @@
 package com.example.autorepairsWithJWT.web;
 
-import com.example.autorepairsWithJWT.model.dto.sparepart.RimCreateModifyRequest;
-import com.example.autorepairsWithJWT.model.dto.sparepart.RimCreatedModifiedResponse;
+import com.example.autorepairsWithJWT.config.mapstruct.StructMapper;
+import com.example.autorepairsWithJWT.exception.NotFoundSparepart;
+import com.example.autorepairsWithJWT.model.dto.sparepart.RimRequest;
+import com.example.autorepairsWithJWT.model.dto.sparepart.RimResponse;
+import com.example.autorepairsWithJWT.model.entity.FilterEntity;
 import com.example.autorepairsWithJWT.model.entity.RimEntity;
 import com.example.autorepairsWithJWT.service.RimService;
 import org.springframework.http.ResponseEntity;
@@ -15,25 +18,31 @@ import java.util.Optional;
 @RestController
 public class RimController {
     private final RimService rimService;
+    private final StructMapper rimMapper;
 
-    public RimController(RimService rimService) {
+    public RimController(RimService rimService, StructMapper rimMapper) {
         this.rimService = rimService;
+        this.rimMapper = rimMapper;
     }
 
     //calling GET on http://localhost:8000/spareparts/rims/2
     @GetMapping("/spareparts/rims/{rimId}")
-    public ResponseEntity<RimEntity> getOneRim(@PathVariable Long rimId) {
-        Optional<RimEntity> rimEntityOpt = this.rimService.findRimById(rimId);
-        return rimEntityOpt.isEmpty()
-                ? ResponseEntity.notFound().build()
-                : ResponseEntity.ok(rimEntityOpt.get());
+    public ResponseEntity<RimResponse> getOneRim(@PathVariable Long rimId) {
+
+        Optional<RimEntity> rimEntityOpt = rimService.findRimById(rimId);
+
+        return rimEntityOpt
+                .map(flt -> ResponseEntity.ok(rimMapper.rimEntityToRimResponse(flt)))
+                .orElseThrow(() -> new NotFoundSparepart("Rim with id " + rimId + " not found"));
     }
 
     //calling GET on http://localhost:8000/spareparts/rims/all
     @GetMapping("/spareparts/rims/all")
-    public ResponseEntity<List<RimEntity>> getAllRims() {
-        List<RimEntity> allRimEntities = this.rimService.findAllRims();
-        return ResponseEntity.ok(allRimEntities);
+    public ResponseEntity<List<RimResponse>> getAllRims() {
+
+        return ResponseEntity.ok(rimService.findAllRims().stream()
+                .map(flt -> rimMapper.rimEntityToRimResponse(flt))
+                .toList());
     }
 
 
@@ -43,16 +52,14 @@ public class RimController {
     //        "inches": "15"
     //    }
     @PostMapping("/spareparts/rims")
-    public ResponseEntity<RimCreatedModifiedResponse> createRim(@RequestBody RimCreateModifyRequest rimCreateModifyRequest, UriComponentsBuilder builder) {
+    public ResponseEntity<?> createRim(@RequestBody RimRequest rimRequest, UriComponentsBuilder builder) {
 
-        RimCreatedModifiedResponse rimCreatedModifiedResponse = rimService.addNewRim(rimCreateModifyRequest);
+        Long rimId = rimService.addNewRim(rimRequest);
         URI location = builder.path("/spareparts/rims/{id}")
-                .buildAndExpand(rimCreatedModifiedResponse.getId())
+                .buildAndExpand(rimId)
                 .toUri();
 
-        return ResponseEntity
-                .created(location)
-                .body(rimCreatedModifiedResponse);
+        return ResponseEntity.created(location).build();
     }
 
     //calling PUT on http://localhost:8000/spareparts/edit/rims/3
@@ -61,25 +68,23 @@ public class RimController {
     //        "inches": "20"
     //    }
     @PutMapping("/spareparts/edit/rims/{rimId}")
-    public ResponseEntity<RimCreatedModifiedResponse> ModifyRim(
-            @PathVariable("rimId") Long rimId, @RequestBody RimCreateModifyRequest rimCreateModifyRequest, UriComponentsBuilder builder) {
+    public ResponseEntity<?> ModifyRim(
+            @PathVariable("rimId") Long rimId, @RequestBody RimRequest rimRequest, UriComponentsBuilder builder) {
 
-        RimCreatedModifiedResponse rimCreatedModifiedResponse =
-                rimService.modifyExistingRim(rimId, rimCreateModifyRequest);
+        rimService.modifyExistingRim(rimId, rimRequest);
 
         URI location = builder.path("/spareparts/rims/{id}")
                 .buildAndExpand(rimId)
                 .toUri();
 
-        return ResponseEntity
-                .created(location)
-                .body(rimCreatedModifiedResponse);
+        return ResponseEntity.ok().location(location).build();
     }
 
     //calling DELETE on http://localhost:8000/spareparts/rims/4
     @DeleteMapping("/spareparts/rims/{rimId}")
-    public ResponseEntity<RimEntity> deleteRimById(@PathVariable("rimId") Long rimId) {
-        this.rimService.deleteRim(rimId);
+    public ResponseEntity<?> deleteRimById(@PathVariable("rimId") Long rimId) {
+
+        rimService.deleteRim(rimId);
 
         return ResponseEntity.noContent().build();
     }

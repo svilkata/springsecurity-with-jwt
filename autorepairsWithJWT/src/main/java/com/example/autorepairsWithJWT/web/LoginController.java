@@ -28,9 +28,8 @@ public class LoginController {
 
     //calling POST on http://localhost:8000/users/login
 //    {
-//        "email": "user@example.com",
-//            "username": "Svilen",
-//            "password": "topsecrect"
+//        "username": "Svilen",
+//        "password": "topsecrect"
 //    }
     @PostMapping("/users/login")
     public ResponseEntity<?> authenticateUserLogin(@RequestBody UserLoginAuthRequest userLoginAuthRequest) {

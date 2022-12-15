@@ -1,10 +1,12 @@
 package com.example.autorepairsWithJWT.service;
 
 import com.example.autorepairsWithJWT.config.mapstruct.StructMapper;
+import com.example.autorepairsWithJWT.exception.ConflictSparepartException;
 import com.example.autorepairsWithJWT.exception.NotFoundSparepart;
 import com.example.autorepairsWithJWT.init.InitializableService;
-import com.example.autorepairsWithJWT.model.dto.sparepart.RimCreateModifyRequest;
-import com.example.autorepairsWithJWT.model.dto.sparepart.RimCreatedModifiedResponse;
+import com.example.autorepairsWithJWT.model.dto.sparepart.RimRequest;
+import com.example.autorepairsWithJWT.model.dto.sparepart.RimResponse;
+import com.example.autorepairsWithJWT.model.entity.FilterEntity;
 import com.example.autorepairsWithJWT.model.entity.RimEntity;
 import com.example.autorepairsWithJWT.repository.RimRepository;
 import org.springframework.stereotype.Service;
@@ -15,11 +17,11 @@ import java.util.Optional;
 @Service
 public class RimService implements InitializableService {
     private final RimRepository rimRepository;
-    private final StructMapper structMapper;
+    private final StructMapper rimMapper;
 
-    public RimService(RimRepository rimRepository, StructMapper structMapper) {
+    public RimService(RimRepository rimRepository, StructMapper rimMapper) {
         this.rimRepository = rimRepository;
-        this.structMapper = structMapper;
+        this.rimMapper = rimMapper;
     }
 
     @Override
@@ -42,46 +44,39 @@ public class RimService implements InitializableService {
     }
 
     public List<RimEntity> findAllRims() {
-        return this.rimRepository.findAll();
+        return rimRepository.findAll();
     }
 
-    public RimCreatedModifiedResponse addNewRim(RimCreateModifyRequest rimCreateModifyRequest) {
-        RimEntity newRimToAdd =
-                new RimEntity()
-                        .setMetalKind(rimCreateModifyRequest.getMetalKind())
-                        .setInches(rimCreateModifyRequest.getInches());
+    public Long addNewRim(RimRequest rimRequest) {
+        Optional<RimEntity> rimEntityOpt = rimRepository.findByMetalKindAndInches(
+                rimRequest.getMetalKind(), rimRequest.getInches());
 
-
-        RimEntity savedInDB = rimRepository.save(newRimToAdd);
-        RimCreatedModifiedResponse rimCreatedModifiedResponse =
-                this.structMapper.rimEntityToRimCreatedModifiedResponseJsonDTO(savedInDB);
-
-        return rimCreatedModifiedResponse;
-    }
-
-    public RimCreatedModifiedResponse modifyExistingRim(Long rimId, RimCreateModifyRequest rimCreateModifyRequest) {
-        Optional<RimEntity> rimOpt = this.rimRepository.findById(rimId);
-        if (rimOpt.isEmpty()) {
-            throw new NotFoundSparepart("You are trying to update a non-existing item");
+        if (rimEntityOpt.isPresent()) {
+            throw new ConflictSparepartException(String.format("Rim metal kind: %s, inches: %s not saved - it already exists",
+                    rimRequest.getMetalKind(), rimRequest.getInches()));
         }
 
-        RimEntity rimToModify = rimOpt.get()
-                .setMetalKind(rimCreateModifyRequest.getMetalKind())
-                .setInches(rimCreateModifyRequest.getInches());
+        return rimRepository.save(rimMapper.rimRequestToRimEntity(rimRequest)).getId();
+    }
 
-        RimEntity savedInDB = rimRepository.save(rimToModify);
-        RimCreatedModifiedResponse rimCreatedModifiedResponse =
-                this.structMapper.rimEntityToRimCreatedModifiedResponseJsonDTO(savedInDB);
+    public void modifyExistingRim(Long rimId, RimRequest rimRequest) {
+        Optional<RimEntity> rimEntityOpt = rimRepository.findById(rimId);
 
-        return rimCreatedModifiedResponse;
+        rimEntityOpt
+                .map(rm -> {
+                    if (rm.equalsToRequest(rimRequest)){
+                        throw new ConflictSparepartException(String.format("Rim sparepart with id %d not modified - no changes detected", rimId));
+                    }
+                    return rimRepository.save(rimMapper.rimRequestToRimEntity(rimRequest).setId(rimId));
+                })
+                .orElseThrow(() -> new NotFoundSparepart("Rim with %d is not found and can not be modified".formatted(rimId)));
     }
 
     public void deleteRim(Long rimId) {
         try {
             rimRepository.deleteById(rimId);
-        } catch (Exception ex){
-            throw new NotFoundSparepart("You are trying to delete a non-existing item");
+        } catch (RuntimeException ex) {
+            throw new NotFoundSparepart("Rim with %d is not found and can not be deleted".formatted(rimId));
         }
-
     }
 }
