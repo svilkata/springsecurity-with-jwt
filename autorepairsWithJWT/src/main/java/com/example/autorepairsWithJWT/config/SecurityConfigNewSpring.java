@@ -1,4 +1,4 @@
-/*package com.example.autorepairsWithJWT.config;
+package com.example.autorepairsWithJWT.config;
 
 import com.example.autorepairsWithJWT.model.enums.UserRoleEnum;
 import com.example.autorepairsWithJWT.utils.JwtTokenFilter;
@@ -56,14 +56,15 @@ public class SecurityConfigNewSpring {
                 // I) *Public endpoints*
                 .authorizeRequests()
                 // everyone can login and register
-                .antMatchers("/", "/users/login/**", "/users/register/**").permitAll()
+                .antMatchers("/", "/users/login", "/users/register").permitAll()
                 //other specific public endpoints
                 .antMatchers(HttpMethod.GET, "/spareparts/rims/all", "/spareparts/rims/{id}").permitAll()
                 .antMatchers(HttpMethod.GET, "/spareparts/tyres/all", "/spareparts/tyres/{id}").permitAll()
                 .antMatchers(HttpMethod.GET, "/spareparts/filters/all", "/spareparts/filters/{id}").permitAll()
 
                 // II) *Private endpoints*
-                //specific authorized endpoints only by user with admin role
+                //specific authorized endpoints only by user with admin role (/users/login and /users/register precede the below endpoints /users/**)
+                .antMatchers("/users/**").hasRole(UserRoleEnum.ADMIN.name()) //any http method (GET, DELETE in our case)
                 .antMatchers(HttpMethod.DELETE, "/spareparts/rims/{id}").hasRole(UserRoleEnum.ADMIN.name())
                 .antMatchers(HttpMethod.DELETE, "/spareparts/tyres/{id}").hasRole(UserRoleEnum.ADMIN.name())
                 .antMatchers(HttpMethod.DELETE, "/spareparts/filters/{id}").hasRole(UserRoleEnum.ADMIN.name())
@@ -103,5 +104,3 @@ public class SecurityConfigNewSpring {
         return new CorsFilter(source);
     }
 }
-
- */

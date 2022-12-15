@@ -10,11 +10,11 @@
 * Only authenticated users with admin role has the authority:
     - to delete spareparts from the database
     - to see all users or a specific user or delete a user
-* The database comes with initially generated data based on the OPEN-CLOSE principle
+* The database comes with initially generated data (`the init package`) based on:  the OPEN-CLOSE principle or the rest web client
 * We save the data in MySQL database using Spring Data and Hibernate
 * We use a bean exposing the Pbkdf2PasswordEncoder() PasswordEncoder - so passwords are saved in the database encoded
 * MapStruct and ModelMapper are used in the project. Only one Mapstruct instance is used for several spareparts and the user - when bigger project, separate mapstruct instance for each type of entity is the preferable way of implementing
-* A `SecurityConfigNewSpring.java` class in `config` package- implementation of the new Spring Security configuration way
+* The `SecurityConfigNewSpring.java` class in `config` package is the implementation of the new Spring Security configuration way. The `SecurityConfig.java` is the old way.
 * In order to start testing the project on POSTMAN, you might better look also the documentation of the other project https://github.com/svilkata/springsecurity-with-jwt/tree/master/JWT-SimpleDemo[JWT-SimpleDemo] -
 a bearer JWT token should be added as an Authorization header for all authenticated https requests.
 * Sample request info (endpoint and body) are given in comments above each controller in the code of the `web` folder.
@@ -28,9 +28,7 @@ a bearer JWT token should be added as an Authorization header for all authentica
 
 * We process the exceptions with the @ControllerAdvice approach
 
-// TODO:
-// check TODOs
-// replace/use in the end  the updated config security chain NewSpring
+
 // creteOneRimViaRestWebClientAuthorizedUser
 
 

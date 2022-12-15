@@ -1,3 +1,4 @@
+/*
 package com.example.autorepairsWithJWT.config;
 
 import com.example.autorepairsWithJWT.model.enums.UserRoleEnum;
@@ -123,6 +124,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return new CorsFilter(source);
     }
 }
+
+ */
 
 
 
