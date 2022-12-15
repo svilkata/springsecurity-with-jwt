@@ -37,4 +37,13 @@ public class RimResponse {
         this.inches = inches;
         return this;
     }
+
+    @Override
+    public String toString() {
+        return "RimResponse{" +
+                "id=" + id +
+                ", metalKind='" + metalKind + '\'' +
+                ", inches='" + inches + '\'' +
+                '}';
+    }
 }

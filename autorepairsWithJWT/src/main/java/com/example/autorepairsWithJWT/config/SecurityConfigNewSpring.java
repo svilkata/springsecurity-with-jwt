@@ -58,9 +58,9 @@ public class SecurityConfigNewSpring {
                 // everyone can login and register
                 .antMatchers("/", "/users/login", "/users/register").permitAll()
                 //other specific public endpoints
-                .antMatchers(HttpMethod.GET, "/spareparts/rims/all", "/spareparts/rims/{id}").permitAll()
-                .antMatchers(HttpMethod.GET, "/spareparts/tyres/all", "/spareparts/tyres/{id}").permitAll()
-                .antMatchers(HttpMethod.GET, "/spareparts/filters/all", "/spareparts/filters/{id}").permitAll()
+                .antMatchers(HttpMethod.GET, "/spareparts/rims/all", "/spareparts/rims/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/spareparts/tyres/all", "/spareparts/tyres/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/spareparts/filters/all", "/spareparts/filters/**").permitAll()
 
                 // II) *Private endpoints*
                 //specific authorized endpoints only by user with admin role (/users/login and /users/register precede the below endpoints /users/**)

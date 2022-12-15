@@ -50,11 +50,11 @@ public class FilterResponse {
 
     @Override
     public String toString() {
-        return "FilterJsonDTO{" +
-                "brand='" + brand + '\'' +
+        return "FilterResponse{" +
+                "id=" + id +
+                ", brand='" + brand + '\'' +
                 ", model='" + model + '\'' +
                 ", modification='" + modification + '\'' +
                 '}';
     }
-
 }

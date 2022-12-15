@@ -77,4 +77,17 @@ public class TyreResponse {
         this.id = id;
         return this;
     }
+
+    @Override
+    public String toString() {
+        return "TyreResponse{" +
+                "id=" + id +
+                ", tyreKind='" + tyreKind + '\'' +
+                ", brand='" + brand + '\'' +
+                ", width='" + width + '\'' +
+                ", height='" + height + '\'' +
+                ", inches='" + inches + '\'' +
+                ", flat='" + flat + '\'' +
+                '}';
+    }
 }

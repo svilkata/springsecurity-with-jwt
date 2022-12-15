@@ -32,7 +32,7 @@ public class LoginController {
 //        "password": "topsecrect"
 //    }
     @PostMapping("/users/login")
-    public ResponseEntity<?> authenticateUserLogin(@RequestBody UserLoginAuthRequest userLoginAuthRequest) {
+    public ResponseEntity<UserLoginAuthResponse> authenticateUserLogin(@RequestBody UserLoginAuthRequest userLoginAuthRequest) {
         try {
             UserDetails userDetails =
                     appUserDetailsService.loadUserByUsername(userLoginAuthRequest.getUsername());

@@ -2,16 +2,14 @@ package com.example.autorepairsWithJWT.init;
 
 import com.example.autorepairsWithJWT.model.dto.sparepart.RimRequest;
 import com.example.autorepairsWithJWT.model.dto.sparepart.RimResponse;
+import com.example.autorepairsWithJWT.model.dto.userauth.UserLoginAuthRequest;
 import com.example.autorepairsWithJWT.model.dto.userauth.UserLoginAuthResponse;
-import com.example.autorepairsWithJWT.model.entity.RimEntity;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.PostConstruct;
@@ -19,11 +17,11 @@ import java.util.List;
 
 @Component
 public class AppInit implements CommandLineRunner {
-    private final RestTemplate restWebClient;
+    private final RestTemplate restTemplateWebClient;
     private final List<InitializableService> allServices;
 
-    public AppInit(RestTemplate restWebClient, List<InitializableService> allServices) {
-        this.restWebClient = restWebClient;
+    public AppInit(RestTemplate restTemplateWebClient, List<InitializableService> allServices) {
+        this.restTemplateWebClient = restTemplateWebClient;
         this.allServices = allServices;
     }
 
@@ -38,73 +36,55 @@ public class AppInit implements CommandLineRunner {
         getAllRims();
         getOneRim();
 
-        Thread.sleep(500);
+//        Thread.sleep(500);
         createOneRimViaRestWebClientAndAuthorizedUser();
     }
 
     private void getAllRims() {
-        ResponseEntity<RimResponse[]> allRimsResponse = restWebClient
+        ResponseEntity<RimResponse[]> allRimsResponse = restTemplateWebClient
                 .getForEntity("http://localhost:8000/spareparts/rims/all", RimResponse[].class);
 
         if (allRimsResponse.hasBody()) {
             for (RimResponse rim : allRimsResponse.getBody()) {
-                System.out.println("Rim: " + rim);
+                System.out.println("Getting all Rims: " + rim);
             }
         }
     }
 
     private void getOneRim() {
-        ResponseEntity<RimResponse> oneRimResponse = restWebClient
+        ResponseEntity<RimResponse> oneRimResponse = restTemplateWebClient
                 .getForEntity("http://localhost:8000/spareparts/rims/1", RimResponse.class);
 
         if (oneRimResponse.hasBody()) {
-            System.out.println("Rim: " + oneRimResponse.getBody());
+            System.out.println("Getting rim with id 1: " + oneRimResponse.getBody());
         }
     }
 
     private void createOneRimViaRestWebClientAndAuthorizedUser() {
+//        ResponseEntity<UserLoginAuthResponse> userLoginAuthResponse = authorizeUser("Svilen", "topsecret");
+
         HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set("Content-Type", "application/json");
 
-        MultiValueMap<String, String> mvpBody = new LinkedMultiValueMap<>();
-//        {
-//            "username": "Svilen",
-//            "password": "topsecrect"
-//        }
-        mvpBody.add("username", "Svilen");
-        mvpBody.add("password", "topsecret");
+//        headers.setBearerAuth(userLoginAuthResponse.getBody().getAccessToken());
+        headers.setBearerAuth("eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTY3MTA5Nzg0OSwiZXhwIjoxNjcxMTg0MjQ5fQ.C0GYJV2JSrlgKLuT5EimXWSeAg_kl7UFK4U7vTc4ErIbfmiVgK8zBoKVbviNBYfUkMx0Pi3BKQd7QUnz9YWidg");
 
-        HttpEntity<MultiValueMap<String, String>> requesUserLogin = new HttpEntity<>(mvpBody, headers);
+        HttpEntity<RimRequest> request = new HttpEntity<>(new RimRequest().setMetalKind("bronze").setInches("15"), headers);
 
-        // TODO: no body
-        ResponseEntity<UserLoginAuthResponse> userLoginAuthResponse = restWebClient
-                .postForEntity("http://localhost:8000/users/login", requesUserLogin, UserLoginAuthResponse.class);
+        ResponseEntity<RimResponse> rimResponse = restTemplateWebClient
+                .postForEntity("http://localhost:8000/spareparts/rims", request, RimResponse.class);
 
-
-
-        headers.setBearerAuth(userLoginAuthResponse.getBody().getAccessToken());
-
-        MultiValueMap<String, String> mvpRimRequest = new LinkedMultiValueMap<>();
-        //    {
-        //        "metalKind": "bronze",
-        //        "inches": "15"
-        //    }
-        mvpRimRequest.add("metalKind", "bronze");
-        mvpRimRequest.add("inches", "15");
-
-//        RimRequest newRimJsonToAdd =
-//                new RimRequest()
-//                        .setMetalKind("bronze")
-//                        .setInches("15");
-//
-//        RimEntity newRimEntity = new RimEntity()
-//                .setMetalKind(newRimJsonToAdd.getMetalKind())
-//                .setInches(newRimJsonToAdd.getInches());
-//
-//        HttpEntity<RimEntity> request = new HttpEntity<>(newRimEntity, headers);
-
-        restWebClient
-                .postForEntity("http://localhost:8000/spareparts/rims", mvpRimRequest, RimResponse.class);
+        System.out.println("Status code for creating demo Rim is: " + rimResponse.getStatusCode());
     }
 
+    private ResponseEntity<UserLoginAuthResponse> authorizeUser(String username, String password) {
+        HttpHeaders headers = new HttpHeaders();
+//        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set("Content-Type", "application/json");
+
+        HttpEntity<UserLoginAuthRequest> requestUserLogin = new HttpEntity<>(new UserLoginAuthRequest(username, password), headers);
+
+        return restTemplateWebClient
+                .postForEntity("http://localhost:8000/users/login", requestUserLogin, UserLoginAuthResponse.class);
+    }
 }

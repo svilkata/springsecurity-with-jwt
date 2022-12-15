@@ -1,5 +1,8 @@
 package com.example.autorepairsWithJWT.model.dto.userauth;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserLoginAuthResponse {
     private String username;
     private String accessToken;
@@ -27,5 +30,13 @@ public class UserLoginAuthResponse {
 
     public void setAccessToken(String accessToken) {
         this.accessToken = accessToken;
+    }
+
+    @Override
+    public String toString() {
+        return "UserLoginAuthResponse{" +
+                "username='" + username + '\'' +
+                ", accessToken='" + accessToken + '\'' +
+                '}';
     }
 }

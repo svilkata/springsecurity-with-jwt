@@ -67,4 +67,16 @@ public class TyreRequest {
         this.flat = flat;
         return this;
     }
+
+    @Override
+    public String toString() {
+        return "TyreRequest{" +
+                "tyreKind='" + tyreKind + '\'' +
+                ", brand='" + brand + '\'' +
+                ", width='" + width + '\'' +
+                ", height='" + height + '\'' +
+                ", inches='" + inches + '\'' +
+                ", flat='" + flat + '\'' +
+                '}';
+    }
 }

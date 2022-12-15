@@ -1,5 +1,8 @@
 package com.example.autorepairsWithJWT.model.dto.userauth;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserLoginAuthRequest {
     private String username;
     private String password;
@@ -28,5 +31,13 @@ public class UserLoginAuthRequest {
     public UserLoginAuthRequest setPassword(String password) {
         this.password = password;
         return this;
+    }
+
+    @Override
+    public String toString() {
+        return "UserLoginAuthRequest{" +
+                "username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                '}';
     }
 }

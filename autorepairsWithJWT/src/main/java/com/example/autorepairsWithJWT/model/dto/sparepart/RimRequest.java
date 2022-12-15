@@ -30,7 +30,7 @@ public class RimRequest {
 
     @Override
     public String toString() {
-        return "RimJsonDTO{" +
+        return "RimRequest{" +
                 "metalKind='" + metalKind + '\'' +
                 ", inches='" + inches + '\'' +
                 '}';

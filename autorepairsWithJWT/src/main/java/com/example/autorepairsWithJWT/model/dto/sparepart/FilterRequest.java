@@ -40,7 +40,7 @@ public class FilterRequest {
 
     @Override
     public String toString() {
-        return "FilterJsonDTO{" +
+        return "FilterRequest{" +
                 "brand='" + brand + '\'' +
                 ", model='" + model + '\'' +
                 ", modification='" + modification + '\'' +

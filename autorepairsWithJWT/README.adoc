@@ -10,7 +10,7 @@
 * Only authenticated users with admin role has the authority:
     - to delete spareparts from the database
     - to see all users or a specific user or delete a user
-* The database comes with initially generated data (`the init package`) based on:  the OPEN-CLOSE principle or the rest web client
+* The database comes with initially generated data (`the init package`) based on:  the OPEN-CLOSE principle   or   the synchronous rest template web client
 * We save the data in MySQL database using Spring Data and Hibernate
 * We use a bean exposing the Pbkdf2PasswordEncoder() PasswordEncoder - so passwords are saved in the database encoded
 * MapStruct and ModelMapper are used in the project. Only one Mapstruct instance is used for several spareparts and the user - when bigger project, separate mapstruct instance for each type of entity is the preferable way of implementing
