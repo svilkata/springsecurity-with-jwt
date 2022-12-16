@@ -7,8 +7,12 @@ import org.springframework.web.client.RestTemplate;
 
 @Configuration
 public class RestClientConfig {
+
     @Bean
-    public RestTemplate create(RestTemplateBuilder restTemplateBuilder){
-        return restTemplateBuilder.build();
+    public RestTemplate create(RestTemplateBuilder restTemplateBuilder) {
+        return restTemplateBuilder
+//                .basicAuthentication("Svilen", "topsecret")
+                .build();
+//        return new RestTemplate();
     }
 }

@@ -5,10 +5,7 @@ import com.example.autorepairsWithJWT.model.dto.sparepart.RimResponse;
 import com.example.autorepairsWithJWT.model.dto.userauth.UserLoginAuthRequest;
 import com.example.autorepairsWithJWT.model.dto.userauth.UserLoginAuthResponse;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
@@ -65,8 +62,11 @@ public class AppInit implements CommandLineRunner {
 
         HttpHeaders headers = new HttpHeaders();
         headers.set("Content-Type", "application/json");
+//        headers.setBasicAuth("Svilen", "topsecret");
 
 //        headers.setBearerAuth(userLoginAuthResponse.getBody().getAccessToken());
+
+        //Manual entered JWT
         headers.setBearerAuth("eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTY3MTA5Nzg0OSwiZXhwIjoxNjcxMTg0MjQ5fQ.C0GYJV2JSrlgKLuT5EimXWSeAg_kl7UFK4U7vTc4ErIbfmiVgK8zBoKVbviNBYfUkMx0Pi3BKQd7QUnz9YWidg");
 
         HttpEntity<RimRequest> request = new HttpEntity<>(new RimRequest().setMetalKind("bronze").setInches("15"), headers);
@@ -80,11 +80,18 @@ public class AppInit implements CommandLineRunner {
     private ResponseEntity<UserLoginAuthResponse> authorizeUser(String username, String password) {
         HttpHeaders headers = new HttpHeaders();
 //        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.set("Content-Type", "application/json");
+//        headers.set("Content-Type", "application/json");
+        headers.set("Accept", "*/*");
+        headers.set("Accept-Encoding", "gzip, deflate, br");
+        headers.set("Connection", "keep-alive");
+        headers.set("Cache-Control", "no-cache");
 
         HttpEntity<UserLoginAuthRequest> requestUserLogin = new HttpEntity<>(new UserLoginAuthRequest(username, password), headers);
 
+//        return restTemplateWebClient
+//                .postForEntity("http://localhost:8000/users/login", requestUserLogin, UserLoginAuthResponse.class);
+
         return restTemplateWebClient
-                .postForEntity("http://localhost:8000/users/login", requestUserLogin, UserLoginAuthResponse.class);
+                .exchange("http://localhost:8000/users/login", HttpMethod.POST, requestUserLogin, UserLoginAuthResponse.class);
     }
 }

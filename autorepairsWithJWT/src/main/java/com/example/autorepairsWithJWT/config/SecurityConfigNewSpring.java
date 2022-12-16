@@ -2,6 +2,7 @@ package com.example.autorepairsWithJWT.config;
 
 import com.example.autorepairsWithJWT.model.enums.UserRoleEnum;
 import com.example.autorepairsWithJWT.utils.JwtTokenFilter;
+import org.hibernate.service.spi.InjectService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -19,7 +20,7 @@ import org.springframework.web.filter.CorsFilter;
 
 import javax.servlet.http.HttpServletResponse;
 
-@Configuration
+@Configuration()
 public class SecurityConfigNewSpring {
     private final JwtTokenFilter jwtTokenFilter;
 
@@ -28,6 +29,7 @@ public class SecurityConfigNewSpring {
     }
 
     @Bean
+    @InjectService
     public SecurityFilterChain configure(HttpSecurity http) throws Exception {
         // Enabling CORS and disable CSRF
         http = http.cors().and().csrf().disable();
