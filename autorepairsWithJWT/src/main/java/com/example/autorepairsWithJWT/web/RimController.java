@@ -4,7 +4,6 @@ import com.example.autorepairsWithJWT.config.mapstruct.StructMapper;
 import com.example.autorepairsWithJWT.exception.NotFoundSparepart;
 import com.example.autorepairsWithJWT.model.dto.sparepart.RimRequest;
 import com.example.autorepairsWithJWT.model.dto.sparepart.RimResponse;
-import com.example.autorepairsWithJWT.model.entity.FilterEntity;
 import com.example.autorepairsWithJWT.model.entity.RimEntity;
 import com.example.autorepairsWithJWT.service.RimService;
 import org.springframework.http.ResponseEntity;

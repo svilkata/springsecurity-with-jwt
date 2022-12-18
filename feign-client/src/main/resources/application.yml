@@ -1,0 +1,10 @@
+auto-repairs-service-client:
+  name: auto-repairs-service
+  domain-url: http://localhost:8000
+  username: Svilen
+  password: topsecret
+  retrieve-all-rims:
+    url: /spareparts/rims/all
+  retrieve-rim-by-id:
+    url: /spareparts/rims/{id}
+

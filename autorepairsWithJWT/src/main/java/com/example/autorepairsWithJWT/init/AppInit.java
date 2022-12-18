@@ -33,8 +33,7 @@ public class AppInit implements CommandLineRunner {
         getAllRims();
         getOneRim();
 
-//        Thread.sleep(500);
-        createOneRimViaRestWebClientAndAuthorizedUser();
+//        createOneRimViaRestWebClientAndAuthorizedUser();
     }
 
     private void getAllRims() {

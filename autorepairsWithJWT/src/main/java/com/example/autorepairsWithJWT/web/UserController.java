@@ -18,7 +18,7 @@ public class UserController {
         this.userService = userService;
     }
 
-    //called on http://localhost:8080/users/1
+    //called on http://localhost:8000/users/1
     @GetMapping("/users/{userId}")
     public ResponseEntity<UserDtoResponse> getOneUser(@PathVariable Long userId) {
         return ResponseEntity.ok(this.userService.findUserById(userId));

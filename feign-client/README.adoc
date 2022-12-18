@@ -1,0 +1,9 @@
+== This is a demo with SpringCloud OpenFeign client
+
+How does it work? Well, the original application https://github.com/svilkata/springsecurity-with-jwt/tree/master/autorepairsWithJWT[autorepairsWithJWT] is at port 8000.
+
+And the current demo app is at port 8080.
+
+First we make a http request on the current app port 8080, and the app makes a call to the original port 8000. Or in other words, for example, in order to take info about all the rims, we make initial call to http://localhost:8080/feign/rims/all, and the app afterwards makes a call to the original port http://localhost:8000/spareparts/rims/all.
+
+Both apps/demos should be run for sure.

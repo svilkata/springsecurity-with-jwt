@@ -29,6 +29,3 @@ a bearer JWT token should be added as an Authorization header for all authentica
 * We process the exceptions with the @ControllerAdvice approach
 
 
-// creteOneRimViaRestWebClientAuthorizedUser
-
-
